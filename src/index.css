@@ -1,0 +1,195 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- Paleta: tokens semânticos, ajustados para os dois temas ---------- */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f8f9fb;
+  --surface-3: #eef0f4;
+  --line: #e6e8ee;
+  --line-strong: #d4d8e1;
+  --fg: #141824;
+  --fg-2: #535b6c;
+  --fg-3: #8890a0;
+
+  --primary: #4f5bff;
+  --primary-hover: #3f4af0;
+  --primary-soft: #eef0ff;
+  --primary-soft-hover: #e1e4ff;
+  --primary-ink: #3640d6;
+  --on-primary: #ffffff;
+
+  --ok: #12804a;
+  --ok-soft: #e8f7ef;
+  --ok-line: #bfe6cf;
+  --warn: #a8620a;
+  --warn-soft: #fff6e5;
+  --warn-line: #f5d9a4;
+  --bad: #d12f3c;
+  --bad-soft: #fdedee;
+  --bad-line: #f5c3c8;
+
+  --toast-bg: #151a26;
+  --toast-fg: #f3f4f8;
+  --ring: rgb(79 91 255 / 0.22);
+  --shadow-color: 220 30% 20%;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #0c0e13;
+  --surface: #14171e;
+  --surface-2: #191d25;
+  --surface-3: #222732;
+  --line: #252a35;
+  --line-strong: #333a48;
+  --fg: #e8eaf0;
+  --fg-2: #a6adbb;
+  --fg-3: #707889;
+
+  --primary: #6470ff;
+  --primary-hover: #7681ff;
+  --primary-soft: rgb(100 112 255 / 0.14);
+  --primary-soft-hover: rgb(100 112 255 / 0.22);
+  --primary-ink: #a9b0ff;
+  --on-primary: #ffffff;
+
+  --ok: #4ad38a;
+  --ok-soft: rgb(74 211 138 / 0.11);
+  --ok-line: rgb(74 211 138 / 0.28);
+  --warn: #f2b84b;
+  --warn-soft: rgb(242 184 75 / 0.11);
+  --warn-line: rgb(242 184 75 / 0.3);
+  --bad: #ff7b85;
+  --bad-soft: rgb(255 123 133 / 0.11);
+  --bad-line: rgb(255 123 133 / 0.3);
+
+  --toast-bg: #eef0f6;
+  --toast-fg: #11141b;
+  --ring: rgb(100 112 255 / 0.35);
+  --shadow-color: 0 0% 0%;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, Consolas, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-hover: var(--primary-soft-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-on-primary: var(--on-primary);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-ok-line: var(--ok-line);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-line: var(--warn-line);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-bad-line: var(--bad-line);
+  --color-toast: var(--toast-bg);
+  --color-toast-fg: var(--toast-fg);
+
+  --shadow-card: 0 1px 2px hsl(var(--shadow-color) / 0.05), 0 1px 1px hsl(var(--shadow-color) / 0.03);
+  --shadow-pop: 0 12px 32px -8px hsl(var(--shadow-color) / 0.22), 0 2px 6px hsl(var(--shadow-color) / 0.08);
+}
+
+/* ---------- Base ---------- */
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection {
+  background: var(--primary-soft-hover);
+}
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+/* Barras de rolagem discretas */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* Transição suave só durante a troca de tema (evita "piscar" cores no meio) */
+.theme-anim,
+.theme-anim *,
+.theme-anim *::before,
+.theme-anim *::after {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    fill 0.35s ease !important;
+}
+
+/* Campo destacado quando o usuário clica numa pendência */
+@keyframes flash {
+  0% { box-shadow: 0 0 0 0 var(--ring); }
+  25% { box-shadow: 0 0 0 6px var(--ring); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.flash {
+  animation: flash 1.2s ease-out;
+  border-radius: 12px;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.shake {
+  animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Ícone do calendário nativo seguindo a cor do texto */
+input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+input[type='date']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+input[type='number']::-webkit-inner-spin-button {
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

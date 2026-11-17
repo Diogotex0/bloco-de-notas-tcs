@@ -1,0 +1,89 @@
+export type Tri = boolean | null
+
+export interface Grupo {
+  id: string
+  nome: string
+  inicio: string // yyyy-mm-dd
+  duracao: string // fim do mandato, yyyy-mm-dd
+  indeterminado: boolean
+}
+
+export interface DocRecebido {
+  id: string
+  tipo: string
+  tipoOutro: string
+  valMeio: 'ITI' | 'Outro'
+  valMeioOutro: string
+  validado: boolean
+}
+
+export interface DocApoio extends DocRecebido {
+  origem: string
+  origemOutro: string
+  data: string
+  anexado: boolean
+}
+
+export interface Filial {
+  id: string
+  cnpj: string // só letras e números
+  replica: Tri
+}
+
+export interface Regra {
+  id: string
+  grupos: string[]
+  modo: 'isolado' | 'conjunto'
+  limite: string // valor em reais, só dígitos
+  semLimite: boolean
+  requerAut: boolean
+  autorizacao: string
+}
+
+export interface Outorga {
+  emissao: string
+  qtd: string
+  unidade: 'anos' | 'meses'
+  indeterminada: boolean
+}
+
+export type Situacao = 'analise' | 'aguardando' | 'finalizada'
+
+export interface Note {
+  id: string
+  createdAt: number
+  updatedAt: number
+  situacao: Situacao
+  /** Data em que foi para a lixeira (0 = não está na lixeira). */
+  excluidaEm: number
+  /** Se já ofereceu copiar dados de outra análise do mesmo CNPJ. */
+  reaproveitar: '' | 'feito' | 'ignorado'
+  /** Anexos que o analista confirmou ter colocado na proposta. */
+  anexosOk: string[]
+  cnpj: string
+  proposta: string
+  razaoSocial: string
+  razaoAlterada: boolean
+  receita: '' | 'ativo' | 'inativo'
+  grupos: Grupo[]
+  docsRecebidos: DocRecebido[]
+  docsApoio: DocApoio[]
+  outorga: Outorga
+  garantidor: Tri
+  dataGarantias: string
+  temFiliais: Tri
+  filiais: Filial[]
+  regras: Regra[]
+  quoruns: string
+  anotacoes: string
+}
+
+export type SectionKey =
+  | 'proposta'
+  | 'grupos'
+  | 'docs'
+  | 'outorga'
+  | 'garantidor'
+  | 'filiais'
+  | 'assinaturas'
+  | 'anotacoes'
