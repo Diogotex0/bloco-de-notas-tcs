@@ -13,7 +13,6 @@ const MINIMO_MS = 900 // tempo mínimo na tela, para a animação não "piscar"
 function esconder(el: HTMLElement) {
   el.classList.add('saindo')
   window.setTimeout(() => el.remove(), 650)
-  document.documentElement.classList.remove('carregando')
 }
 
 function mostrarNovidades(el: HTMLElement) {
@@ -54,14 +53,17 @@ export function concluirCarregamento() {
   const el = document.getElementById('splash')
   if (!el) return
   let anterior: string | null = null
+  let jaUsava = false
   try {
     anterior = localStorage.getItem(CHAVE)
+    // Quem já usava o site antes deste aviso existir também deve ver as novidades.
+    jaUsava = anterior === null && !!localStorage.getItem('bloco-poderes:notas')
     localStorage.setItem(CHAVE, novidades.versao)
   } catch {
     /* sem armazenamento: só esconde a tela */
   }
   const forcar = new URLSearchParams(location.search).has('novidades') // para testar: ?novidades
-  const atualizou = forcar || (anterior !== null && anterior !== novidades.versao)
+  const atualizou = forcar || jaUsava || (anterior !== null && anterior !== novidades.versao)
   const espera = Math.max(0, MINIMO_MS - performance.now())
   window.setTimeout(() => (atualizou ? mostrarNovidades(el) : esconder(el)), espera)
 }
