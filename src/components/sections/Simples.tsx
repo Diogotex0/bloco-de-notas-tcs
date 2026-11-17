@@ -3,7 +3,8 @@ import { CalendarClock } from 'lucide-react'
 import type { Note } from '../../lib/types'
 import { vencimento } from '../../lib/analyze'
 import { fmtDate } from '../../lib/dates'
-import { ultimaBaseGarantias, useNotes } from '../../store/notes'
+import { useNotes } from '../../store/notes'
+import { DATA_BASE_GARANTIAS } from '../../lib/defaults'
 import { Checkbox, Field, Segmented, Select, Tag, TextArea, cx, inputBase } from '../ui'
 import { DateInput } from '../DateInput'
 
@@ -96,7 +97,6 @@ export function Outorga({ n }: { n: Note }) {
 /* ---------- Garantidor ---------- */
 export function Garantidor({ n }: { n: Note }) {
   const editar = useNotes((s) => s.editar)
-  const ultima = useNotes((s) => ultimaBaseGarantias(s.notes, n.id))
   return (
     <div className="grid gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -117,8 +117,12 @@ export function Garantidor({ n }: { n: Note }) {
           label="Data da base de garantias"
           htmlFor="f-dataGarantias"
           hint={
-            n.dataGarantias && n.dataGarantias === ultima ? (
-              <span className="text-fg-3">Mesma data da última análise. Troque se a base foi atualizada.</span>
+            n.dataGarantias === DATA_BASE_GARANTIAS ? (
+              <span className="text-fg-3">Data padrão da base de garantias.</span>
+            ) : n.dataGarantias ? (
+              <button type="button" className="text-primary-ink hover:underline" onClick={() => editar((d) => void (d.dataGarantias = DATA_BASE_GARANTIAS))}>
+                Voltar para a data padrão ({fmtDate(DATA_BASE_GARANTIAS)})
+              </button>
             ) : undefined
           }
         >

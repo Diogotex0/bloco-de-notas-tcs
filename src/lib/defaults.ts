@@ -17,7 +17,10 @@ export const DOC_TIPOS = [
   'Regimento Interno',
 ]
 
-export const ORIGENS = ['Busca', 'Junta Comercial', 'Sharefiche 1', 'Sharefiche 2']
+export const ORIGENS = ['Busca', 'Junta Comercial', 'Sharefiche 1', 'Sharefiche 2', 'Proposta anterior']
+
+/** Data da base de garantias usada em toda anotação nova. */
+export const DATA_BASE_GARANTIAS = '2026-10-23'
 
 export const SUGESTOES_GRUPO = ['ADMINISTRADOR', 'DIRETOR', 'PROCURADOR', 'SÓCIO ADMINISTRADOR', 'CONSELHEIRO']
 
@@ -36,10 +39,10 @@ export const uid = () => Date.now().toString(36) + Math.random().toString(36).sl
 
 export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false })
 export const novoRecebido = (): DocRecebido => ({
-  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false,
+  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '',
 })
 export const novoApoio = (): DocApoio => ({
-  ...novoRecebido(), origem: '', origemOutro: '', data: '', anexado: false,
+  ...novoRecebido(), origem: '', origemOutro: '', propostaAnterior: '', anexado: false,
 })
 export const novaFilial = (cnpj: string): Filial => ({ id: uid(), cnpj: cnpjClean(cnpj), replica: null })
 export const novaRegra = (): Regra => ({

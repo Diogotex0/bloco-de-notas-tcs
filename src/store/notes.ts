@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type { Note } from '../lib/types'
-import { PP, normalizarNota, notaVazia, novaNota, uid } from '../lib/defaults'
+import { DATA_BASE_GARANTIAS, PP, normalizarNota, notaVazia, novaNota, uid } from '../lib/defaults'
 import { notaExemplo } from '../lib/example'
 
 export const NOTES_KEY = 'bloco-poderes:notas'
@@ -121,8 +121,8 @@ export const useNotes = create<NotesState>()(
 
         criar: (base) => {
           const n = base ?? novaNota()
-          // A base de garantias é a mesma para as análises do período: já vem com a última data usada.
-          if (!base) n.dataGarantias = ultimaBaseGarantias(get().notes)
+          // A base de garantias é a mesma para todas as análises: já vem com a data fixa.
+          if (!base) n.dataGarantias = DATA_BASE_GARANTIAS
           set((s) => {
             limparVazia(s)
             s.notes.unshift(n)

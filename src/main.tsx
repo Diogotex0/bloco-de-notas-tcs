@@ -6,6 +6,7 @@ import '@fontsource-variable/jetbrains-mono'
 import './index.css'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { concluirCarregamento, vigiarAtualizacoes } from './lib/splash'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,3 +15,15 @@ createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// Tira a tela de carregamento depois do primeiro desenho. O setTimeout garante que funcione
+// mesmo com a aba em segundo plano (onde o navegador não desenha quadros).
+let concluido = false
+const concluir = () => {
+  if (concluido) return
+  concluido = true
+  concluirCarregamento()
+}
+requestAnimationFrame(() => requestAnimationFrame(concluir))
+window.setTimeout(concluir, 120)
+vigiarAtualizacoes()

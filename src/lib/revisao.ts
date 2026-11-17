@@ -30,7 +30,12 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
       : [{ rotulo: 'Grupos', valor: '' }],
     docs: [
       ...(n.docsRecebidos.length
-        ? n.docsRecebidos.map((d) => ({ rotulo: 'Recebido', valor: d.tipo ? docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : '') : '' }))
+        ? n.docsRecebidos.map((d) => ({
+            rotulo: 'Utilizado',
+            valor: d.tipo
+              ? [docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : ''), fmtDate(d.data)].filter(Boolean).join(' · ')
+              : '',
+          }))
         : [{ rotulo: 'Documento recebido', valor: '' }]),
       ...n.docsApoio.map((d) => ({
         rotulo: 'De apoio',

@@ -132,11 +132,17 @@ function Remover({ lista, d, i }: { lista: Lista; d: DocRecebido; i: number }) {
 }
 
 function Recebido({ d, i }: { d: DocRecebido; i: number }) {
+  const setDoc = useSetDoc()
   return (
     <motion.div {...itemMotion} className={itemCard}>
       <div className="flex items-start gap-3">
-        <div className={cx('grid flex-1 gap-3', d.tipo === 'Outro' && 'sm:grid-cols-2')}>
-          <TipoCampos d={d} lista="docsRecebidos" />
+        <div className="grid flex-1 gap-3">
+          <div className={cx('grid gap-3', d.tipo === 'Outro' && 'sm:grid-cols-2')}>
+            <TipoCampos d={d} lista="docsRecebidos" />
+          </div>
+          <Field label="Data do documento" htmlFor={`${d.id}-data`} className="sm:max-w-[calc(50%-6px)]">
+            <DateInput id={`${d.id}-data`} value={d.data} onChange={(v) => setDoc('docsRecebidos', d.id, (x) => void (x.data = v))} />
+          </Field>
         </div>
         <div className="pt-[22px]">
           <Remover lista="docsRecebidos" d={d} i={i} />
@@ -184,6 +190,16 @@ function Apoio({ d, i }: { d: DocApoio; i: number }) {
               />
             </div>
           </div>
+          {d.origem === 'Proposta anterior' && (
+            <Field label="Nº da proposta anterior" htmlFor={`${d.id}-propostaAnterior`}>
+              <TextInput
+                id={`${d.id}-propostaAnterior`}
+                value={d.propostaAnterior}
+                placeholder="Ex.: 2025-003210"
+                onChange={(e) => setDoc('docsApoio', d.id, (x) => void (x.propostaAnterior = e.target.value))}
+              />
+            </Field>
+          )}
           {d.origem === 'Outro' && (
             <Field label="Qual origem?" htmlFor={`${d.id}-origemOutro`}>
               <TextInput
@@ -221,7 +237,7 @@ export function Documentos({ n }: { n: Note }) {
   return (
     <div className="grid gap-6">
       <div>
-        <SubHead title="Recebidos na proposta" />
+        <SubHead title="Documento utilizado" desc="O que veio na proposta. Informe a data do documento." />
         <div className="relative grid gap-2.5">
           <AnimatePresence mode="popLayout" initial={false}>
             {n.docsRecebidos.map((d, i) => (
@@ -231,14 +247,14 @@ export function Documentos({ n }: { n: Note }) {
           {!n.docsRecebidos.length && <EmptyMini>Nenhum ainda.</EmptyMini>}
         </div>
         <Button id="add-recebido" variant="soft" className="mt-3" onClick={() => add('docsRecebidos')}>
-          <Plus /> Documento recebido
+          <Plus /> Documento utilizado
         </Button>
       </div>
 
       <div className="h-px bg-line" />
 
       <div>
-<SubHead title="Documentos de apoio" desc="Os que você buscou. Informe a data e de onde tirou." />
+<SubHead title="Documentos de apoio" desc="Os que você buscou. Informe a data e de onde tirou (inclusive de uma proposta anterior)." />
         <div className="relative grid gap-2.5">
           <AnimatePresence mode="popLayout" initial={false}>
             {n.docsApoio.map((d, i) => (

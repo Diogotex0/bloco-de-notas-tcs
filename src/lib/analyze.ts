@@ -67,11 +67,16 @@ export function analisar(n: Note): Issue[] {
     }
     return nome
   }
-  n.docsRecebidos.forEach((d, i) => checkDoc(d, i, 'Documento recebido'))
+  n.docsRecebidos.forEach((d, i) => {
+    const nome = checkDoc(d, i, 'Documento utilizado')
+    if (!parseISO(d.data)) add('warn', 'docs', `${nome}: informe a data do documento`, `${d.id}-data`)
+  })
   n.docsApoio.forEach((d, i) => {
     const nome = checkDoc(d, i, 'Documento de apoio')
     if (!d.origem) add('warn', 'docs', `${nome}: informe de onde foi retirado`, `${d.id}-origem`)
     else if (d.origem === 'Outro' && !d.origemOutro.trim()) add('warn', 'docs', `${nome}: descreva a origem`, `${d.id}-origemOutro`)
+    else if (d.origem === 'Proposta anterior' && !d.propostaAnterior.trim())
+      add('warn', 'docs', `${nome}: informe o nº da proposta anterior`, `${d.id}-propostaAnterior`)
     if (!parseISO(d.data)) add('warn', 'docs', `${nome}: informe a data do documento`, `${d.id}-data`)
     if (d.origem === 'Junta Comercial' && !d.anexado)
       add('warn', 'docs', `${nome}: anexe na proposta (Junta Comercial)`, `${d.id}-anexado`)

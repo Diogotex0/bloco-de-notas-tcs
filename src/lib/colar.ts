@@ -81,6 +81,17 @@ export function destinosData(n: Note): DestinoData[] {
         },
       })
   })
+  n.docsRecebidos.forEach((doc, i) =>
+    out.push({
+      rotulo: `Data do documento utilizado · ${doc.tipo ? docLabel(doc) : `Documento ${i + 1}`}`,
+      sec: 'docs',
+      alvo: `${doc.id}-data`,
+      aplicar: (d, iso) => {
+        const x = d.docsRecebidos.find((y) => y.id === doc.id)
+        if (x) x.data = iso
+      },
+    }),
+  )
   n.docsApoio.forEach((doc, i) =>
     out.push({
       rotulo: `Data do documento · ${doc.tipo ? docLabel(doc) : `Apoio ${i + 1}`}`,

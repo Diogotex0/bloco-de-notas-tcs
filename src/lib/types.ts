@@ -15,12 +15,14 @@ export interface DocRecebido {
   valMeio: 'ITI' | 'Outro'
   valMeioOutro: string
   validado: boolean
+  data: string // data do documento
 }
 
 export interface DocApoio extends DocRecebido {
   origem: string
   origemOutro: string
-  data: string
+  /** Nº da proposta anterior, quando o documento foi achado numa proposta antiga. */
+  propostaAnterior: string
   anexado: boolean
 }
 

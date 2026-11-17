@@ -24,7 +24,11 @@ export function mandatoTexto(g: Grupo) {
   return '—'
 }
 
-export const origemLabel = (d: DocApoio) => (d.origem === 'Outro' ? d.origemOutro.trim() || 'Outro' : d.origem)
+export const origemLabel = (d: DocApoio) => {
+  if (d.origem === 'Outro') return d.origemOutro.trim() || 'Outro'
+  if (d.origem === 'Proposta anterior') return d.propostaAnterior.trim() ? `Proposta anterior nº ${d.propostaAnterior.trim()}` : 'Proposta anterior'
+  return d.origem
+}
 
 export function regraTexto(n: Note, r: Regra) {
   const nomes = r.grupos
@@ -69,7 +73,9 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
         if (itens.length === 1) L.push(`${um}: ${itens[0]}`)
         else if (itens.length > 1) L.push(`${varios}:`, ...itens.map((t) => `- ${t}`))
       }
-      const rec = n.docsRecebidos.map((d) => (d.tipo ? docLabel(d) : '(tipo não informado)') + ppTexto(d))
+      const rec = n.docsRecebidos.map(
+        (d) => (d.tipo ? docLabel(d) : '(tipo não informado)') + (fmtDate(d.data) ? ` · Data: ${fmtDate(d.data)}` : '') + ppTexto(d),
+      )
       const apo = n.docsApoio.map((d) => {
         const p = [d.tipo ? docLabel(d) : '(tipo não informado)']
         if (fmtDate(d.data)) p.push(`Data: ${fmtDate(d.data)}`)
