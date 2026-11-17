@@ -12,6 +12,8 @@ Segue a ordem do trabalho do analista, avisa o que está faltando, impede o esqu
 ![Offline](https://img.shields.io/badge/funciona-offline-22c55e)
 ![Sem servidor](https://img.shields.io/badge/dados-só_no_seu_navegador-6470ff)
 
+**[🌐 Abrir o Bloco de Poderes](https://diogotex0.github.io/bloco-de-notas-tcs/)**
+
 <img src="docs/tela-clara.jpg" alt="Bloco de Poderes no modo claro" width="49%" />
 <img src="docs/tela-escura.jpg" alt="Bloco de Poderes no modo escuro" width="49%" />
 
@@ -76,7 +78,12 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 
 ## 🚀 Como usar
 
-### Jeito mais fácil (sem instalar nada)
+### Usar online
+👉 **[diogotex0.github.io/bloco-de-notas-tcs](https://diogotex0.github.io/bloco-de-notas-tcs/)**
+
+Abre direto no navegador. As anotações ficam salvas só no seu computador.
+
+### Usar offline (sem instalar nada)
 1. Baixe o arquivo [`dist-portatil/index.html`](dist-portatil/index.html).
 2. Dê dois cliques. Ele abre no navegador e funciona **offline**.
 3. Clique em **Ver um exemplo** para conhecer tudo com dados fictícios.
