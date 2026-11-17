@@ -1,5 +1,5 @@
 import type { DocApoio, DocRecebido, Grupo, Note, Regra, Tri } from './types'
-import { PP } from './defaults'
+import { PP, PUB } from './defaults'
 import { cnpjFormat } from './cnpj'
 import { fmtDate } from './dates'
 import { moneyFull } from './money'
@@ -12,6 +12,15 @@ const ppTexto = (d: DocRecebido) => {
   if (!d.validado) return ' (validação pendente)'
   const meio = d.valMeio === 'Outro' ? d.valMeioOutro.trim() || 'outro meio' : 'ITI'
   return ` (validação realizada via ${meio}, evidência anexada)`
+}
+
+/** "Livro 12 · Folha 34" da procuração pública (vazio para os outros tipos). */
+export function livroFolha(d: DocRecebido) {
+  if (d.tipo !== PUB) return []
+  const p: string[] = []
+  if (d.livro.trim()) p.push(`Livro: ${d.livro.trim()}`)
+  if (d.folha.trim()) p.push(`Folha: ${d.folha.trim()}`)
+  return p
 }
 
 export function mandatoTexto(g: Grupo) {
@@ -73,11 +82,13 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
         if (itens.length === 1) L.push(`${um}: ${itens[0]}`)
         else if (itens.length > 1) L.push(`${varios}:`, ...itens.map((t) => `- ${t}`))
       }
-      const rec = n.docsRecebidos.map(
-        (d) => (d.tipo ? docLabel(d) : '(tipo não informado)') + (fmtDate(d.data) ? ` · Data: ${fmtDate(d.data)}` : '') + ppTexto(d),
-      )
+      const rec = n.docsRecebidos.map((d) => {
+        const p = [d.tipo ? docLabel(d) : '(tipo não informado)', ...livroFolha(d)]
+        if (fmtDate(d.data)) p.push(`Data: ${fmtDate(d.data)}`)
+        return p.join(' · ') + ppTexto(d)
+      })
       const apo = n.docsApoio.map((d) => {
-        const p = [d.tipo ? docLabel(d) : '(tipo não informado)']
+        const p = [d.tipo ? docLabel(d) : '(tipo não informado)', ...livroFolha(d)]
         if (fmtDate(d.data)) p.push(`Data: ${fmtDate(d.data)}`)
         if (d.origem) p.push(`Origem: ${origemLabel(d)}`)
         let s = p.join(' · ')

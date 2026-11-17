@@ -1,5 +1,5 @@
 import type { DocRecebido, Note, Outorga, SectionKey } from './types'
-import { PP } from './defaults'
+import { PP, PUB } from './defaults'
 import { cnpjClean, cnpjValido } from './cnpj'
 import { addMonths, daysBetween, fmtDate, parseISO, today } from './dates'
 
@@ -64,6 +64,10 @@ export function analisar(n: Note): Issue[] {
       if (!d.validado) add('block', 'docs', `${nome}: validação pendente`, `${d.id}-validado`)
       if (d.valMeio === 'Outro' && !d.valMeioOutro.trim())
         add('warn', 'docs', `${nome}: informe o meio de validação`, `${d.id}-valMeioOutro`)
+    }
+    if (d.tipo === PUB) {
+      if (!d.livro.trim()) add('warn', 'docs', `${nome}: informe o livro`, `${d.id}-livro`)
+      if (!d.folha.trim()) add('warn', 'docs', `${nome}: informe a folha`, `${d.id}-folha`)
     }
     return nome
   }

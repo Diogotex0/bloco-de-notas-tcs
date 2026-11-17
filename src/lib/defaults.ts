@@ -2,6 +2,7 @@ import type { DocApoio, DocRecebido, Filial, Grupo, Note, Regra, SectionKey } fr
 import { cnpjClean } from './cnpj'
 
 export const PP = 'Procuração Particular'
+export const PUB = 'Procuração Pública'
 
 export const DOC_TIPOS = [
   'Estatuto Social',
@@ -9,7 +10,7 @@ export const DOC_TIPOS = [
   'Ata de Reunião ou Assembleia de Sócios',
   'Ata de Assembleia Geral Ordinária',
   'Ata de Reunião do Conselho de Administração',
-  'Procuração Pública',
+  PUB,
   PP,
   'Substabelecimento',
   'Procuração Padrão',
@@ -39,7 +40,7 @@ export const uid = () => Date.now().toString(36) + Math.random().toString(36).sl
 
 export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false })
 export const novoRecebido = (): DocRecebido => ({
-  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '',
+  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '', livro: '', folha: '',
 })
 export const novoApoio = (): DocApoio => ({
   ...novoRecebido(), origem: '', origemOutro: '', propostaAnterior: '', anexado: false,

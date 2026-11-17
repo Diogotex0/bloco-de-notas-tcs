@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { Lock, Plus, ShieldCheck, Trash2 } from 'lucide-react'
 import type { DocApoio, DocRecebido, Note } from '../../lib/types'
-import { DOC_TIPOS, ORIGENS, PP, novoApoio, novoRecebido } from '../../lib/defaults'
+import { DOC_TIPOS, ORIGENS, PP, PUB, novoApoio, novoRecebido } from '../../lib/defaults'
 import { removerComDesfazer } from '../../lib/actions'
 import { useNotes } from '../../store/notes'
 import { porId } from '../../lib/janela'
@@ -114,6 +114,31 @@ function TipoCampos({ d, lista }: { d: DocRecebido; lista: Lista }) {
   )
 }
 
+/** Livro e folha do cartório, só para procuração pública. */
+function LivroFolha({ d, lista }: { d: DocRecebido; lista: Lista }) {
+  const setDoc = useSetDoc()
+  return (
+    <>
+      <Field label="Livro" htmlFor={`${d.id}-livro`}>
+        <TextInput
+          id={`${d.id}-livro`}
+          value={d.livro}
+          placeholder="Ex.: 1234"
+          onChange={(e) => setDoc(lista, d.id, (x) => void (x.livro = e.target.value))}
+        />
+      </Field>
+      <Field label="Folha" htmlFor={`${d.id}-folha`}>
+        <TextInput
+          id={`${d.id}-folha`}
+          value={d.folha}
+          placeholder="Ex.: 056"
+          onChange={(e) => setDoc(lista, d.id, (x) => void (x.folha = e.target.value))}
+        />
+      </Field>
+    </>
+  )
+}
+
 function Remover({ lista, d, i }: { lista: Lista; d: DocRecebido; i: number }) {
   return (
     <IconButton
@@ -140,9 +165,12 @@ function Recebido({ d, i }: { d: DocRecebido; i: number }) {
           <div className={cx('grid gap-3', d.tipo === 'Outro' && 'sm:grid-cols-2')}>
             <TipoCampos d={d} lista="docsRecebidos" />
           </div>
-          <Field label="Data do documento" htmlFor={`${d.id}-data`} className="sm:max-w-[calc(50%-6px)]">
-            <DateInput id={`${d.id}-data`} value={d.data} onChange={(v) => setDoc('docsRecebidos', d.id, (x) => void (x.data = v))} />
-          </Field>
+          <div className={cx('grid gap-3', d.tipo === PUB ? 'sm:grid-cols-3' : 'sm:grid-cols-2')}>
+            {d.tipo === PUB && <LivroFolha d={d} lista="docsRecebidos" />}
+            <Field label="Data do documento" htmlFor={`${d.id}-data`}>
+              <DateInput id={`${d.id}-data`} value={d.data} onChange={(v) => setDoc('docsRecebidos', d.id, (x) => void (x.data = v))} />
+            </Field>
+          </div>
         </div>
         <div className="pt-[22px]">
           <Remover lista="docsRecebidos" d={d} i={i} />
@@ -190,6 +218,11 @@ function Apoio({ d, i }: { d: DocApoio; i: number }) {
               />
             </div>
           </div>
+          {d.tipo === PUB && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <LivroFolha d={d} lista="docsApoio" />
+            </div>
+          )}
           {d.origem === 'Proposta anterior' && (
             <Field label="Nº da proposta anterior" htmlFor={`${d.id}-propostaAnterior`}>
               <TextInput

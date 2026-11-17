@@ -16,6 +16,9 @@ export interface DocRecebido {
   valMeioOutro: string
   validado: boolean
   data: string // data do documento
+  /** Procuração pública: livro e folha do cartório. */
+  livro: string
+  folha: string
 }
 
 export interface DocApoio extends DocRecebido {

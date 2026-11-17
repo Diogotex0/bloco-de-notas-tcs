@@ -3,7 +3,7 @@ import type { Note, SectionKey } from './types'
 import { SECTIONS } from './defaults'
 import { docLabel, vencimento } from './analyze'
 import { fmtDate } from './dates'
-import { mandatoTexto, origemLabel, regraTexto } from './generate'
+import { livroFolha, mandatoTexto, origemLabel, regraTexto } from './generate'
 import { cnpjFormat } from './cnpj'
 
 export const useRevisao = create<{ aberta: boolean }>(() => ({ aberta: false }))
@@ -33,13 +33,13 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
         ? n.docsRecebidos.map((d) => ({
             rotulo: 'Utilizado',
             valor: d.tipo
-              ? [docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : ''), fmtDate(d.data)].filter(Boolean).join(' · ')
+              ? [docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : ''), ...livroFolha(d), fmtDate(d.data)].filter(Boolean).join(' · ')
               : '',
           }))
         : [{ rotulo: 'Documento recebido', valor: '' }]),
       ...n.docsApoio.map((d) => ({
         rotulo: 'De apoio',
-        valor: [d.tipo ? docLabel(d) : '', fmtDate(d.data), d.origem ? origemLabel(d) : ''].filter(Boolean).join(' · '),
+        valor: [d.tipo ? docLabel(d) : '', ...livroFolha(d), fmtDate(d.data), d.origem ? origemLabel(d) : ''].filter(Boolean).join(' · '),
       })),
     ],
     outorga: (() => {
