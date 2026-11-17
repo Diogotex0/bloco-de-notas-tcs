@@ -60,6 +60,8 @@ export interface Note {
   reaproveitar: '' | 'feito' | 'ignorado'
   /** Anexos que o analista confirmou ter colocado na proposta. */
   anexosOk: string[]
+  /** Nota rápida de cada etapa: lembretes que não entram no texto final. */
+  notasEtapa: Partial<Record<SectionKey, string>>
   cnpj: string
   proposta: string
   razaoSocial: string

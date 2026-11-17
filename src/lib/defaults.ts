@@ -56,6 +56,7 @@ export function novaNota(): Note {
     excluidaEm: 0,
     reaproveitar: '',
     anexosOk: [],
+    notasEtapa: {},
     cnpj: '',
     proposta: '',
     razaoSocial: '',
@@ -118,6 +119,12 @@ export function normalizarNota(raw: unknown): Note | null {
   if (!['analise', 'aguardando', 'finalizada'].includes(n.situacao)) n.situacao = 'analise'
   if (!['', 'feito', 'ignorado'].includes(n.reaproveitar)) n.reaproveitar = ''
   n.anexosOk = n.anexosOk.filter((x): x is string => typeof x === 'string')
+  const notasRaw = isObj(raw.notasEtapa) ? raw.notasEtapa : {}
+  n.notasEtapa = {}
+  for (const s of SECTIONS) {
+    const v = notasRaw[s.key]
+    if (typeof v === 'string' && v.trim()) n.notasEtapa[s.key] = v
+  }
   if (!['anos', 'meses'].includes(n.outorga.unidade)) n.outorga.unidade = 'anos'
   n.grupos = list(n.grupos, () => novoGrupo())
   n.docsRecebidos = list(n.docsRecebidos, novoRecebido)

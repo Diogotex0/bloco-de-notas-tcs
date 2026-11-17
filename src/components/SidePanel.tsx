@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { CircleAlert, Copy, Info, Lock, PartyPopper } from 'lucide-react'
+import { CircleAlert, Copy, Info, Lock, PartyPopper, Settings2 } from 'lucide-react'
 import type { Note } from '../lib/types'
 import type { Issue } from '../lib/analyze'
 import { temConteudo } from '../lib/analyze'
@@ -8,6 +8,7 @@ import { SECTIONS } from '../lib/defaults'
 import { blocoAssinaturas, blocoDocumentos, blocoFiliais, blocoGrupos, gerarTexto } from '../lib/generate'
 import { copiarTexto, irPara } from '../lib/actions'
 import { toast } from '../store/toast'
+import { abrirEditorModelo, useModelo } from '../store/modelo'
 import { CopyButton } from './CopyButton'
 import { cx } from './ui'
 
@@ -25,6 +26,7 @@ const PARTES: { nome: string; genero: 'o' | 'a'; gerar: (n: Note) => string[] }[
 
 export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
   const [aba, setAba] = useState<Aba>('pendencias')
+  const modelo = useModelo((s) => s.modelo)
   const obrig = SECTIONS.filter((s) => !s.optional)
   const prontas = obrig.filter((s) => !issues.some((i) => i.sec === s.key && i.level !== 'info') && temConteudo(n, s.key)).length
   const pct = Math.round((prontas / obrig.length) * 100)
@@ -126,6 +128,14 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
           ) : (
             <motion.div key="t" initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -6 }} transition={{ duration: 0.15 }}>
               <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={abrirEditorModelo}
+                  title="Mudar a ordem, os rótulos e as frases do texto"
+                  className="order-last ml-auto inline-flex h-7 items-center gap-1 rounded-full px-2 text-[12px] font-medium text-primary-ink hover:bg-primary-soft"
+                >
+                  <Settings2 className="size-3.5" /> Editar modelo
+                </button>
                 <span className="mr-0.5 text-[12px] text-fg-3">Copiar só:</span>
                 {PARTES.map((p) => {
                   const linhas = p.gerar(n)
@@ -147,7 +157,7 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
                 })}
               </div>
               <pre className="rounded-xl bg-surface-2 p-3.5 font-mono text-[12.25px] leading-[1.7] break-words whitespace-pre-wrap text-fg-2">
-                {gerarTexto(n)}
+                {gerarTexto(n, modelo)}
               </pre>
             </motion.div>
           )}

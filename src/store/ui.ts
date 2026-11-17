@@ -19,6 +19,9 @@ interface UiState {
   pip: HTMLElement | null
   setPip: (el: HTMLElement | null) => void
   miniAba: 'etapas' | 'resumo'
+  /** Modo foco: só a etapa atual, sem lista lateral nem painel. */
+  foco: boolean
+  alternarFoco: () => void
   setMiniAba: (a: 'etapas' | 'resumo') => void
   abrirEtapa: (k: SectionKey | null, rolar?: boolean) => void
   alternarEtapa: (k: SectionKey) => void
@@ -63,12 +66,29 @@ export const useUi = create<UiState>()((set, get) => ({
   pip: null,
   setPip: (pip) => set({ pip }),
   miniAba: 'etapas',
+  foco: (() => {
+    try {
+      return localStorage.getItem('bloco-poderes:foco') === '1'
+    } catch {
+      return false
+    }
+  })(),
+  alternarFoco: () => {
+    const foco = !get().foco
+    try {
+      localStorage.setItem('bloco-poderes:foco', foco ? '1' : '0')
+    } catch {
+      /* ignora */
+    }
+    set({ foco, aberta: get().aberta ?? 'proposta' })
+  },
   setMiniAba: (miniAba) => set({ miniAba }),
   abrirEtapa: (k, rolar = false) => {
     set({ aberta: k })
     if (k && rolar) rolarAte(k)
   },
   alternarEtapa: (k) => {
+    if (get().foco && get().aberta === k) return // no modo foco a etapa atual fica sempre aberta
     const abrindo = get().aberta !== k
     set({ aberta: abrindo ? k : null })
     if (abrindo) rolarAte(k)

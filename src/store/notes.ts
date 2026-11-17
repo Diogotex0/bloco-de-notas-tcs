@@ -62,6 +62,30 @@ export const ultimaBaseGarantias = (notes: Note[], exceto?: string) =>
     .filter((n) => n.dataGarantias && !n.excluidaEm && n.id !== exceto)
     .sort((a, b) => b.updatedAt - a.updatedAt)[0]?.dataGarantias ?? ''
 
+/* ---------- Histórico para Ctrl+Z / Ctrl+Y (só na memória, por anotação) ---------- */
+const HIST_MAX = 150
+const historico = new Map<string, { passado: Note[]; futuro: Note[]; ultimo: number }>()
+const hist = (id: string) => {
+  let h = historico.get(id)
+  if (!h) {
+    h = { passado: [], futuro: [], ultimo: 0 }
+    historico.set(id, h)
+  }
+  return h
+}
+/** Guarda a anotação antes de mudar. Digitação seguida (menos de 0,7 s entre teclas) vira um passo só. */
+function registrar(n: Note | undefined, agrupar: boolean) {
+  if (!n) return
+  const h = hist(n.id)
+  const agora = Date.now()
+  if (!agrupar || agora - h.ultimo > 700) {
+    h.passado.push(n) // o estado é imutável, então guardar a referência é seguro e leve
+    if (h.passado.length > HIST_MAX) h.passado.shift()
+  }
+  h.ultimo = agora
+  h.futuro = []
+}
+
 interface NotesState {
   notes: Note[]
   currentId: string | null
@@ -78,6 +102,8 @@ interface NotesState {
   exemplo: () => void
   reaproveitarDe: (origemId: string) => { procuracaoResetada: boolean } | null
   importar: (raw: unknown) => { novas: number; atualizadas: number; ignoradas: number }
+  desfazer: () => boolean
+  refazer: () => boolean
 }
 
 export const useNotes = create<NotesState>()(
@@ -112,13 +138,45 @@ export const useNotes = create<NotesState>()(
             s.currentId = id && s.notes.some((n) => n.id === id) ? id : null
           }),
 
-        editar: (fn) =>
+        editar: (fn) => {
+          registrar(get().notes.find((x) => x.id === get().currentId), true)
           set((s) => {
             const n = s.notes.find((x) => x.id === s.currentId)
             if (!n) return
             fn(n)
             n.updatedAt = Date.now()
-          }),
+          })
+        },
+
+        desfazer: () => {
+          const atual = get().notes.find((x) => x.id === get().currentId)
+          if (!atual) return false
+          const h = hist(atual.id)
+          const anterior = h.passado.pop()
+          if (!anterior) return false
+          h.futuro.push(atual)
+          h.ultimo = 0
+          set((s) => {
+            const i = s.notes.findIndex((x) => x.id === atual.id)
+            if (i >= 0) s.notes[i] = { ...anterior, updatedAt: Date.now() }
+          })
+          return true
+        },
+
+        refazer: () => {
+          const atual = get().notes.find((x) => x.id === get().currentId)
+          if (!atual) return false
+          const h = hist(atual.id)
+          const prox = h.futuro.pop()
+          if (!prox) return false
+          h.passado.push(atual)
+          h.ultimo = 0
+          set((s) => {
+            const i = s.notes.findIndex((x) => x.id === atual.id)
+            if (i >= 0) s.notes[i] = { ...prox, updatedAt: Date.now() }
+          })
+          return true
+        },
 
         excluir: (id) =>
           set((s) => {
@@ -150,13 +208,15 @@ export const useNotes = create<NotesState>()(
             if (atualNaLixeira) s.currentId = proxima(s.notes)
           }),
 
-        restaurar: (note, index) =>
+        restaurar: (note, index) => {
+          registrar(get().notes.find((x) => x.id === note.id), false)
           set((s) => {
             const i = s.notes.findIndex((n) => n.id === note.id)
             if (i >= 0) s.notes[i] = note
             else s.notes.splice(Math.min(index ?? 0, s.notes.length), 0, note)
             s.currentId = note.id
-          }),
+          })
+        },
 
         duplicar: () => {
           const atual = get().notes.find((n) => n.id === get().currentId)
@@ -183,6 +243,7 @@ export const useNotes = create<NotesState>()(
           if (!origem || !get().currentId) return null
           const src = structuredClone(origem)
           let procuracaoResetada = false
+          registrar(get().notes.find((x) => x.id === get().currentId), false)
           set((s) => {
             const n = s.notes.find((x) => x.id === s.currentId)
             if (!n) return

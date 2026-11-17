@@ -57,6 +57,7 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 - **Faixa "Falta anexar"** no topo enquanto houver anexo pendente.
 - **Lembrete ao sair** (opcional): notificação do Windows se você trocar de tela com anexo pendente.
 - **Checklist clicável:** cada pendência leva direto ao campo.
+- **Revisão antes de finalizar:** uma tela com tudo o que foi preenchido de um lado e o texto final do outro, mostrando o que está em branco.
 
 ### ⚡ Para ir mais rápido
 - **Texto final pronto** no modelo do time, com botão **Copiar** (e copiar por partes: só grupos, documentos, filiais ou assinaturas).
@@ -65,11 +66,15 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 - **Teclado:** <kbd>Enter</kbd> vai para o próximo campo, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> para a próxima etapa, letras escolhem opções (<kbd>S</kbd>/<kbd>N</kbd>).
 - **Reaproveitar análise:** se o CNPJ já tem uma análise anterior, oferece copiar grupos, documentos e filiais.
 - **Janela flutuante:** botão **Destacar** abre o bloco numa janelinha que fica por cima do Salesforce, PDF etc.
+- **Comparar com a análise anterior:** em cliente recorrente, mostra o que mudou (grupo novo, mandato diferente, filiais novas…).
+- **Modelo do texto editável:** o próprio analista muda a ordem, os rótulos e as frases do texto final, e pode exportar o modelo para o time.
+- **Modo foco:** esconde a lista e o painel e mostra só a etapa atual, com uma barra de etapas no topo.
 
 ### 🗂️ Organização
 - Situação da anotação: **Em análise · Em aguardo · Finalizada**, com abas na lista lateral.
 - **Lixeira** de 30 dias, com restaurar e excluir de vez.
-- **Desfazer** em toda remoção.
+- **Ctrl+Z / Ctrl+Y** para desfazer e refazer qualquer alteração.
+- **Nota rápida** em cada etapa, para lembretes que não entram no texto final.
 - Busca por CNPJ, proposta ou nome.
 - **Backup** em arquivo (exportar / importar).
 - Modo **claro e escuro**.
@@ -108,6 +113,8 @@ npm run build:portatil   # gera dist-portatil/index.html (um arquivo só)
 | <kbd>Alt</kbd>+<kbd>N</kbd> | Nova anotação |
 | <kbd>Alt</kbd>+<kbd>C</kbd> | Copiar o texto final |
 | <kbd>Ctrl</kbd>+<kbd>K</kbd> | Buscar anotação |
+| <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd> | Desfazer / refazer |
+| <kbd>Alt</kbd>+<kbd>M</kbd> | Modo foco |
 | <kbd>Enter</kbd> | Próximo campo |
 | <kbd>Ctrl</kbd>+<kbd>Enter</kbd> | Próxima etapa |
 | <kbd>S</kbd> / <kbd>N</kbd> (e setas) | Escolher a opção selecionada |
@@ -153,6 +160,7 @@ src/
 
 - [ ] Tour de boas-vindas e colinha de atalhos dentro do bloco
 - [ ] Biblioteca de textos prontos (quóruns e autorizações)
+- [ ] Backup automático numa pasta
 - [ ] Extensão de navegador que lê CNPJ e nº da proposta da página do Salesforce
 - [ ] Integração oficial (depende de liberação)
 

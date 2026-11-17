@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { CircleAlert, CircleCheck, CopyPlus, PictureInPicture2, Info, Menu, NotebookPen, Plus, Sparkles, Trash2, TriangleAlert, X } from 'lucide-react'
+import { CircleAlert, CircleCheck, ClipboardCheck, CopyPlus, Maximize2, Minimize2, PictureInPicture2, Info, Menu, NotebookPen, Plus, Sparkles, Trash2, TriangleAlert, X } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { excluirDeVez, excluirNota, focarQuandoExistir } from '../lib/actions'
 import { abrirJanelaFlutuante } from '../lib/pip'
+import { abrirRevisao } from '../lib/revisao'
 import { useNotes, useSaveStatus } from '../store/notes'
 import { useUi } from '../store/ui'
 import { useToasts, type Toast } from '../store/toast'
@@ -15,11 +16,13 @@ export function Topbar({ n, bloqueado }: { n: Note | null; bloqueado: boolean })
   const setNav = useUi((s) => s.setNav)
   const { error, available, savedAt } = useSaveStatus()
   const duplicar = useNotes((s) => s.duplicar)
+  const foco = useUi((s) => s.foco)
+  const alternarFoco = useUi((s) => s.alternarFoco)
 
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-xl">
       <div className="mx-auto flex h-[68px] max-w-[1360px] items-center gap-3 px-4 sm:px-6 lg:px-8">
-        <IconButton label="Abrir menu" className="lg:hidden" onClick={() => setNav(true)}>
+        <IconButton label="Abrir menu" className={cx('lg:hidden', foco && 'hidden')} onClick={() => setNav(true)}>
           <Menu />
         </IconButton>
         <div className="min-w-0 flex-1">
@@ -57,6 +60,16 @@ export function Topbar({ n, bloqueado }: { n: Note | null; bloqueado: boolean })
                 </>
               )}
             </span>
+            <IconButton
+              label={foco ? 'Sair do modo foco (Alt + M)' : 'Modo foco: só a etapa atual (Alt + M)'}
+              onClick={alternarFoco}
+              className={cx(foco && 'bg-primary-soft text-primary-ink hover:bg-primary-soft-hover hover:text-primary-ink')}
+            >
+              {foco ? <Minimize2 /> : <Maximize2 />}
+            </IconButton>
+            <Button variant="outline" size="sm" onClick={abrirRevisao} title="Ver tudo o que foi preenchido antes de finalizar" className="hidden md:inline-flex">
+              <ClipboardCheck /> Revisar
+            </Button>
             <Button variant="outline" size="sm" onClick={() => void abrirJanelaFlutuante()} title="Abre o bloco numa janelinha que fica por cima das outras janelas" className="hidden md:inline-flex">
               <PictureInPicture2 /> Destacar
             </Button>

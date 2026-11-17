@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Archive, BellOff, BellRing, Download, Moon, NotebookPen, Plus, Search, Sparkles, Sun, Upload, X } from 'lucide-react'
+import { Archive, BellOff, BellRing, Download, Settings2, Moon, NotebookPen, Plus, Search, Sparkles, Sun, Upload, X } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { analisar, statusDe, type NoteStatus } from '../lib/analyze'
 import { notaVazia } from '../lib/defaults'
@@ -11,6 +11,7 @@ import { diasRestantesLixeira, useNotes } from '../store/notes'
 import { useUi, type Filtro } from '../store/ui'
 import { janela } from '../lib/janela'
 import { alternarLembrete, useLembrete } from '../lib/lembrete'
+import { abrirEditorModelo } from '../store/modelo'
 import { Button, IconButton, Kbd, cx } from './ui'
 
 const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
@@ -228,6 +229,9 @@ export function Sidebar() {
             Carregar exemplo
           </RodapeBtn>
           <div className="flex items-center gap-1">
+            <IconButton label="Modelo do texto (ordem, rótulos e frases)" onClick={abrirEditorModelo}>
+              <Settings2 />
+            </IconButton>
             <IconButton label="Exportar backup (salva todas as anotações num arquivo)" onClick={exportarBackup}>
               <Download />
             </IconButton>

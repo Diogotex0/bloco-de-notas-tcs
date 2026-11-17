@@ -19,7 +19,9 @@ import { Etapas } from './components/Etapas'
 import { FaixaAnexos } from './components/Anexos'
 import { Overlays } from './components/Overlays'
 import { MiniApp } from './components/MiniApp'
-import { Button } from './components/ui'
+import { Button, cx } from './components/ui'
+import { Stepper } from './components/Stepper'
+import { Comparacao } from './components/Comparacao'
 
 /** Atalhos, colar inteligente e lembrete de anexos na aba principal. */
 function useEventosGlobais() {
@@ -50,6 +52,8 @@ export default function App() {
   const issues = useMemo(() => (n ? analisar(n) : []), [n])
   const bloqueado = issues.some((i) => i.level === 'block')
   const pip = useUi((s) => s.pip)
+  const foco = useUi((s) => s.foco)
+  const aberta = useUi((s) => s.aberta)
   useEventosGlobais()
 
   // Ao trocar de anotação, abre direto a primeira etapa que ainda tem algo pendente.
@@ -65,12 +69,25 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-dvh lg:grid lg:grid-cols-[290px_minmax(0,1fr)]">
-        <Sidebar />
+      <div className={cx('min-h-dvh', !foco && 'lg:grid lg:grid-cols-[290px_minmax(0,1fr)]')}>
+        {!foco && <Sidebar />}
         <main className="min-w-0">
           <Topbar n={pip ? null : n} bloqueado={bloqueado} />
           {pip ? (
             <NaJanelaFlutuante />
+          ) : n && foco ? (
+            // Modo foco: só a etapa atual, centralizada
+            <motion.div
+              key={`${n.id}-foco`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+              className="mx-auto grid max-w-3xl gap-3.5 px-4 pt-5 pb-28 sm:px-6"
+            >
+              <Stepper n={n} issues={issues} />
+              <FaixaAnexos />
+              <Etapas n={n} issues={issues} somente={aberta ?? 'proposta'} />
+            </motion.div>
           ) : n ? (
             <motion.div
               key={n.id}
@@ -82,6 +99,7 @@ export default function App() {
               <div className="grid min-w-0 content-start gap-3.5">
                 <SituacaoBar n={n} />
                 <FaixaAnexos />
+                <Comparacao n={n} />
                 <Etapas n={n} issues={issues} />
               </div>
               <aside className="min-w-0">

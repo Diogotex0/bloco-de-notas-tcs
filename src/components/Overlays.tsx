@@ -6,6 +6,8 @@ import { fmtDate } from '../lib/dates'
 import { janela } from '../lib/janela'
 import { useCurrent } from '../store/notes'
 import { AnexosDialog } from './Anexos'
+import { RevisaoDialog } from './Revisao'
+import { ModeloEditor } from './ModeloEditor'
 import { ConfirmDialog } from './ConfirmDialog'
 import { Toaster } from './Shell'
 import { Button } from './ui'
@@ -88,6 +90,8 @@ export function Overlays() {
     <>
       <Toaster />
       <ConfirmDialog />
+      <RevisaoDialog />
+      <ModeloEditor />
       <AnexosDialog />
       <ColarDataDialog />
     </>

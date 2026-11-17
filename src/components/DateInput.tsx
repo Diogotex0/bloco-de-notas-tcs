@@ -60,23 +60,29 @@ export function DateInput({ id, value, onChange, disabled, className, ...rest }:
   const [invalida, setInvalida] = useState(false)
   const calendario = useRef<HTMLInputElement>(null)
 
-  // Atualiza o texto quando a data muda por fora (exemplo, cópia de outra análise, desfazer).
+  // Atualiza o texto quando a data muda por fora (exemplo, cópia de outra análise, Ctrl+Z).
+  const ultimoEnviado = useRef(value)
   useEffect(() => {
-    if (!focado) {
+    if (!focado || value !== ultimoEnviado.current) {
       setTexto(isoParaBr(value))
       setInvalida(false)
     }
+    ultimoEnviado.current = value
   }, [value, focado])
+  const enviar = (iso: string) => {
+    ultimoEnviado.current = iso
+    onChange(iso)
+  }
 
   const confirmar = (t: string) => {
     const iso = lerData(t)
     if (iso === null) {
       setInvalida(true)
-      if (value) onChange('')
+      if (value) enviar('')
       return
     }
     setInvalida(false)
-    if (iso !== value) onChange(iso)
+    if (iso !== value) enviar(iso)
     setTexto(isoParaBr(iso))
   }
 
@@ -124,8 +130,8 @@ export function DateInput({ id, value, onChange, disabled, className, ...rest }:
           const digitos = m.replace(/\D/g, '')
           if (digitos.length === 8) {
             const iso = lerData(m)
-            if (iso) onChange(iso)
-          } else if (!digitos && value) onChange('')
+            if (iso) enviar(iso)
+          } else if (!digitos && value) enviar('')
         }}
         className={cx(inputBase, 'pr-10 tabular-nums', className)}
       />
@@ -155,7 +161,7 @@ export function DateInput({ id, value, onChange, disabled, className, ...rest }:
         value={parseISO(value) ? value : ''}
         onChange={(e) => {
           setInvalida(false)
-          onChange(e.target.value)
+          enviar(e.target.value)
         }}
         className="pointer-events-none absolute right-0 bottom-0 h-0 w-0 opacity-0"
       />

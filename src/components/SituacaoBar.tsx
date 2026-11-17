@@ -4,8 +4,7 @@ import { excluirDeVez } from '../lib/actions'
 import { diasRestantesLixeira, useNotes } from '../store/notes'
 import { useUi } from '../store/ui'
 import { toast } from '../store/toast'
-import { pedirConferencia } from '../store/anexos'
-import { anexosPendentes } from '../lib/anexos'
+import { abrirRevisao } from '../lib/revisao'
 import { Button, Segmented } from './ui'
 
 const NOMES: Record<Situacao, string> = {
@@ -58,13 +57,12 @@ export function SituacaoBar({ n }: { n: Note }) {
         value={n.situacao}
         onChange={(v) => {
           if (!v || v === n.situacao) return
-          // Ao finalizar, confere os anexos primeiro.
-          if (v === 'finalizada' && anexosPendentes(n).length) {
-            pedirConferencia('finalizar')
+          // Ao finalizar, abre a revisão primeiro (ela confere os anexos em seguida).
+          if (v === 'finalizada') {
+            abrirRevisao()
             return
           }
           editar((d) => void (d.situacao = v))
-          if (v === 'finalizada') toast('Anotação finalizada. Ela fica na aba “Finalizadas”.', { type: 'success' })
         }}
         options={[
           { value: 'analise' as const, label: NOMES.analise },

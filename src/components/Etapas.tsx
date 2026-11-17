@@ -5,6 +5,7 @@ import { temConteudo } from '../lib/analyze'
 import { SECTIONS } from '../lib/defaults'
 import { resumoEtapa } from '../lib/summary'
 import { Section } from './Section'
+import { useNotes } from '../store/notes'
 import { Proposta } from './sections/Proposta'
 import { Grupos } from './sections/Grupos'
 import { Documentos } from './sections/Documentos'
@@ -24,10 +25,11 @@ const CONTEUDO: Record<SectionKey, (p: { n: Note }) => ReactNode> = {
 }
 
 /** As 8 etapas da anotação. Usado na aba e na janela flutuante. */
-export function Etapas({ n, issues }: { n: Note; issues: Issue[] }) {
+export function Etapas({ n, issues, somente }: { n: Note; issues: Issue[]; somente?: SectionKey }) {
   return (
     <>
       {SECTIONS.map((s, i) => {
+        if (somente && s.key !== somente) return null
         const Conteudo = CONTEUDO[s.key]
         return (
           <Section
@@ -41,6 +43,13 @@ export function Etapas({ n, issues }: { n: Note; issues: Issue[] }) {
             issues={issues.filter((x) => x.sec === s.key && x.level !== 'info')}
             hasContent={temConteudo(n, s.key)}
             next={SECTIONS[i + 1] && { key: SECTIONS[i + 1].key, title: SECTIONS[i + 1].title }}
+            nota={n.notasEtapa[s.key] ?? ''}
+            onNota={(v) =>
+              useNotes.getState().editar((d) => {
+                if (v) d.notasEtapa[s.key] = v
+                else delete d.notasEtapa[s.key]
+              })
+            }
           >
             <Conteudo n={n} />
           </Section>
