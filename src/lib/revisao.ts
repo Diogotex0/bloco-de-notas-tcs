@@ -62,7 +62,7 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
       ]
     })(),
     anotacoes: [
-      { rotulo: 'Anotações', valor: n.anotacoes.trim(), opcional: true },
+      { rotulo: 'Anotações', valor: n.anotacoes.trim() },
       { rotulo: 'Tem alinhamento?', valor: n.temAlinhamento === null ? '' : n.temAlinhamento ? 'Sim' : 'Não' },
       ...(n.temAlinhamento ? [{ rotulo: 'Alinhamento', valor: n.alinhamento.trim() }] : []),
     ],
