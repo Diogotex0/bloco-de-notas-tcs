@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Plus, Trash2, X } from 'lucide-react'
 import type { Filial, Note, Tri } from '../../lib/types'
 import { novaFilial } from '../../lib/defaults'
-import { cnpjClean, cnpjFormat, cnpjValido } from '../../lib/cnpj'
+import { cnpjClean, cnpjFormat, cnpjValido, extrairCnpjs } from '../../lib/cnpj'
 import { removerComDesfazer } from '../../lib/actions'
 import { useNotes } from '../../store/notes'
 import { porId } from '../../lib/janela'
@@ -34,12 +34,10 @@ export function Filiais({ n }: { n: Note }) {
   const raizMatriz = cnpjClean(n.cnpj).slice(0, 8)
 
   const adicionar = () => {
-    const tokens = entrada
-      .split(/[\s,;]+/)
-      .map(cnpjClean)
-      .filter((t) => t && /\d/.test(t))
+    // Pega só os CNPJs: agência, conta, endereço e o que mais vier junto ficam de fora.
+    const tokens = extrairCnpjs(entrada)
     if (!tokens.length) {
-      toast('Cole ou digite ao menos um CNPJ', { type: 'warn' })
+      toast(entrada.trim() ? 'Nenhum CNPJ encontrado no texto colado' : 'Cole ou digite ao menos um CNPJ', { type: 'warn' })
       porId('f-filiaisInput')?.focus()
       return
     }
@@ -141,7 +139,7 @@ export function Filiais({ n }: { n: Note }) {
                       value={entrada}
                       rows={2}
                       className="min-h-[64px] font-mono text-[13px]"
-                      placeholder="Cole vários de uma vez (um por linha)"
+                      placeholder="Cole aqui. Pode vir com agência, conta e outros dados: só os CNPJs entram."
                       onChange={(e) => setEntrada(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {

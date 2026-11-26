@@ -13,8 +13,6 @@ export type BlocoChave =
   | 'garantidor'
   | 'razaoAlterada'
   | 'filiais'
-  | 'assinaturas'
-  | 'quoruns'
   | 'anotacoes'
 
 export interface Bloco {
@@ -74,8 +72,6 @@ export const CATALOGO: Record<BlocoChave, { nome: string; dica?: string; rotulos
       { id: 'definir', nome: 'Grupo a definir', padrao: 'A definir' },
     ],
   },
-  assinaturas: { nome: 'Formas de assinatura', rotulos: [{ id: 'titulo', nome: 'Título', padrao: 'Formas de assinatura' }] },
-  quoruns: { nome: 'Quóruns e autorizações', rotulos: [{ id: 'titulo', nome: 'Título', padrao: 'Quóruns e autorizações' }] },
   anotacoes: { nome: 'Anotações', rotulos: [{ id: 'titulo', nome: 'Título', padrao: 'Anotações' }] },
 }
 
@@ -89,8 +85,6 @@ const ORDEM_PADRAO: [BlocoChave, boolean][] = [
   ['garantidor', true],
   ['razaoAlterada', false],
   ['filiais', false],
-  ['assinaturas', true],
-  ['quoruns', true],
   ['anotacoes', true],
 ]
 

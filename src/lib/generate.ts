@@ -1,8 +1,7 @@
-import type { DocApoio, DocRecebido, Grupo, Note, Regra, Tri } from './types'
+import type { DocApoio, DocRecebido, Grupo, Note, Tri } from './types'
 import { PP, PUB } from './defaults'
 import { cnpjFormat } from './cnpj'
 import { fmtDate } from './dates'
-import { moneyFull } from './money'
 import { docLabel } from './analyze'
 import { type BlocoChave, type Modelo, rotulo } from './modelo'
 import { useModelo } from '../store/modelo'
@@ -39,19 +38,6 @@ export const origemLabel = (d: DocApoio) => {
   return d.origem
 }
 
-export function regraTexto(n: Note, r: Regra) {
-  const nomes = r.grupos
-    .map((id) => n.grupos.find((g) => g.id === id))
-    .filter((g) => !!g)
-    .map((g) => g.nome.trim() || 'Grupo sem nome')
-  const quem = nomes.length ? nomes.join(r.modo === 'conjunto' ? ' + ' : ' ou ') : '(selecione os grupos)'
-  const modo = r.modo === 'conjunto' ? (nomes.length === 1 ? 'em conjunto entre si' : 'em conjunto') : 'isoladamente'
-  const lim = r.semLimite ? 'sem limite de valor' : r.limite ? `até ${moneyFull(r.limite)}` : 'limite não informado'
-  let s = `${quem} · ${modo} · ${lim}`
-  if (r.requerAut) s += ` · requer autorização${r.autorizacao.trim() ? `: ${r.autorizacao.trim()}` : ''}`
-  return s
-}
-
 const atual = () => useModelo.getState().modelo
 
 export function fraseGarantidor(n: Note, m: Modelo = atual()) {
@@ -85,6 +71,7 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
       const rec = n.docsRecebidos.map((d) => {
         const p = [d.tipo ? docLabel(d) : '(tipo não informado)', ...livroFolha(d)]
         if (fmtDate(d.data)) p.push(`Data: ${fmtDate(d.data)}`)
+        if (d.jucesp) p.push('Retirado da JUCESP, em anexo')
         return p.join(' · ') + ppTexto(d)
       })
       const apo = n.docsApoio.map((d) => {
@@ -120,10 +107,6 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
       })
       return L
     }
-    case 'assinaturas':
-      return n.regras.length ? [`${r('titulo')}:`, ...n.regras.map((x) => `- ${regraTexto(n, x)}`)] : []
-    case 'quoruns':
-      return n.quoruns.trim() ? [`${r('titulo')}:`, n.quoruns.trim()] : []
     case 'anotacoes':
       return n.anotacoes.trim() ? [`${r('titulo')}:`, n.anotacoes.trim()] : []
   }
@@ -133,11 +116,6 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
 export const blocoGrupos = (n: Note) => linhasBloco(n, 'grupos')
 export const blocoDocumentos = (n: Note) => linhasBloco(n, 'documentos')
 export const blocoFiliais = (n: Note) => linhasBloco(n, 'filiais')
-export function blocoAssinaturas(n: Note): string[] {
-  const a = linhasBloco(n, 'assinaturas')
-  const q = linhasBloco(n, 'quoruns')
-  return a.length && q.length ? [...a, '', ...q] : [...a, ...q]
-}
 
 /** Gera o texto final seguindo o modelo (ordem, rótulos e espaços). */
 export function gerarTexto(n: Note, m: Modelo = atual()) {

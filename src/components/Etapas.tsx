@@ -11,7 +11,6 @@ import { Grupos } from './sections/Grupos'
 import { Documentos } from './sections/Documentos'
 import { Anotacoes, Garantidor } from './sections/Simples'
 import { Filiais } from './sections/Filiais'
-import { Assinaturas } from './sections/Assinaturas'
 
 const CONTEUDO: Record<SectionKey, (p: { n: Note }) => ReactNode> = {
   proposta: Proposta,
@@ -19,7 +18,6 @@ const CONTEUDO: Record<SectionKey, (p: { n: Note }) => ReactNode> = {
   docs: Documentos,
   garantidor: Garantidor,
   filiais: Filiais,
-  assinaturas: Assinaturas,
   anotacoes: Anotacoes,
 }
 

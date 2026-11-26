@@ -175,7 +175,7 @@ export function FaixaAnexos({ compacta }: { compacta?: boolean }) {
             <Paperclip className="size-4 shrink-0 text-warn" />
             <p className="min-w-0 flex-1 text-[13px] leading-snug text-fg">
               <span className="font-semibold">Falta anexar: </span>
-              <span className="text-fg-2">{pend.map((a) => a.texto.toLowerCase()).join(', ')}</span>
+              <span className="text-fg-2">{pend.map((a) => a.texto.toLowerCase().replace(/\bjucesp\b/g, 'JUCESP')).join(', ')}</span>
             </p>
             <Button size="sm" variant="outline" onClick={() => pedirConferencia('confirmar')} className="shrink-0">
               Já anexei

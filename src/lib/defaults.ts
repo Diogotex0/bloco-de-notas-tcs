@@ -1,5 +1,6 @@
-import type { DocApoio, DocRecebido, Filial, Grupo, Note, Regra, SectionKey } from './types'
+import type { DocApoio, DocRecebido, Filial, Grupo, Note, SectionKey } from './types'
 import { cnpjClean } from './cnpj'
+import { moneyFull } from './money'
 
 export const PP = 'Procuração Particular'
 export const PUB = 'Procuração Pública'
@@ -33,23 +34,19 @@ export const SECTIONS: { key: SectionKey; title: string; desc: string; optional?
   { key: 'docs', title: 'Documentos', desc: 'Recebidos na proposta e de apoio' },
   { key: 'garantidor', title: 'Garantidor', desc: 'Consulta à base de garantias' },
   { key: 'filiais', title: 'Filiais', desc: 'CNPJs e réplica' },
-  { key: 'assinaturas', title: 'Formas de assinatura', desc: 'Grupos, limites e autorizações', optional: true },
-  { key: 'anotacoes', title: 'Anotações', desc: 'Observações livres', optional: true },
+  { key: 'anotacoes', title: 'Anotações', desc: 'Formas de assinatura, quóruns e observações', optional: true },
 ]
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9)
 
 export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false })
 export const novoRecebido = (): DocRecebido => ({
-  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '', livro: '', folha: '',
+  id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '', livro: '', folha: '', jucesp: false,
 })
 export const novoApoio = (): DocApoio => ({
   ...novoRecebido(), origem: '', origemOutro: '', propostaAnterior: '', anexado: false,
 })
 export const novaFilial = (cnpj: string): Filial => ({ id: uid(), cnpj: cnpjClean(cnpj), replica: null })
-export const novaRegra = (): Regra => ({
-  id: uid(), grupos: [], modo: 'isolado', limite: '', semLimite: false, requerAut: false, autorizacao: '',
-})
 
 export function novaNota(): Note {
   const now = Date.now()
@@ -74,8 +71,6 @@ export function novaNota(): Note {
     dataGarantias: '',
     temFiliais: null,
     filiais: [],
-    regras: [],
-    quoruns: '',
     anotacoes: '',
   }
 }
@@ -85,7 +80,7 @@ export function notaVazia(n: Note) {
     !n.cnpj && !n.proposta && !n.razaoSocial && !n.razaoAlterada && !n.receita &&
     !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length &&
     n.garantidor === null &&
-    n.temFiliais === null && !n.filiais.length && !n.regras.length && !n.quoruns.trim() && !n.anotacoes.trim()
+    n.temFiliais === null && !n.filiais.length && !n.anotacoes.trim()
   )
 }
 
@@ -134,10 +129,31 @@ export function normalizarNota(raw: unknown): Note | null {
   // "Busca" passou a se chamar "Busca Ai".
   n.docsApoio = list(n.docsApoio, novoApoio).map((d) => (d.origem === 'Busca' ? { ...d, origem: 'Busca Ai' } : d))
   n.filiais = list(n.filiais, () => novaFilial('')).map((f) => ({ ...f, cnpj: cnpjClean(f.cnpj) })).filter((f) => f.cnpj)
-  n.regras = list(n.regras, novaRegra).map((r) => ({
-    ...r,
-    modo: r.modo === 'conjunto' ? 'conjunto' : 'isolado',
-    grupos: Array.isArray(r.grupos) ? r.grupos.filter((g): g is string => typeof g === 'string') : [],
-  }))
+  // A etapa "Formas de assinatura" saiu: o que estava preenchido vai para as anotações.
+  const assinaturas = assinaturasEmTexto(raw, n.grupos)
+  if (assinaturas) n.anotacoes = n.anotacoes.trim() ? `${n.anotacoes.trimEnd()}\n\n${assinaturas}` : assinaturas
   return n
+}
+
+/** Converte as formas de assinatura e os quóruns de anotações antigas em texto (para as anotações). */
+function assinaturasEmTexto(raw: Obj, grupos: Grupo[]): string {
+  const regras = Array.isArray(raw.regras) ? raw.regras.filter(isObj) : []
+  const quoruns = typeof raw.quoruns === 'string' ? raw.quoruns.trim() : ''
+  const L: string[] = []
+  if (regras.length) {
+    L.push('Formas de assinatura:')
+    for (const r of regras) {
+      const ids = Array.isArray(r.grupos) ? r.grupos : []
+      const nomes = ids.map((id) => grupos.find((g) => g.id === id)?.nome.trim() ?? '').filter(Boolean)
+      const conjunto = r.modo === 'conjunto'
+      const quem = nomes.length ? nomes.join(conjunto ? ' + ' : ' ou ') : '(grupos não informados)'
+      const modo = conjunto ? (nomes.length === 1 ? 'em conjunto entre si' : 'em conjunto') : 'isoladamente'
+      const limite = typeof r.limite === 'string' ? r.limite.replace(/\D/g, '') : ''
+      const lim = r.semLimite === true ? 'sem limite de valor' : limite ? `até ${moneyFull(limite)}` : 'limite não informado'
+      const aut = typeof r.autorizacao === 'string' ? r.autorizacao.trim() : ''
+      L.push(`- ${quem} · ${modo} · ${lim}${r.requerAut === true ? ` · requer autorização${aut ? `: ${aut}` : ''}` : ''}`)
+    }
+  }
+  if (quoruns) L.push(...(L.length ? [''] : []), 'Quóruns e autorizações:', quoruns)
+  return L.join('\n')
 }

@@ -54,7 +54,7 @@ export function Comparacao({ n }: { n: Note }) {
         {aberto && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.24 }} className="overflow-hidden">
             <ul className="grid gap-1 border-t border-line px-3 py-3 sm:px-4">
-              {mudancas.length === 0 && <li className="px-2 py-1 text-[13px] text-fg-2">Grupos, documentos, filiais e assinaturas estão iguais à análise anterior.</li>}
+              {mudancas.length === 0 && <li className="px-2 py-1 text-[13px] text-fg-2">Grupos, documentos e filiais estão iguais à análise anterior.</li>}
               {mudancas.map((m, i) => {
                 const { Icon, cor } = estilo[m.tipo]
                 return (

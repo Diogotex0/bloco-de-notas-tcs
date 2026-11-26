@@ -19,6 +19,8 @@ export interface DocRecebido {
   /** Procuração pública: livro e folha do cartório. */
   livro: string
   folha: string
+  /** Documento utilizado que foi retirado da JUCESP (precisa ir anexado na proposta). */
+  jucesp: boolean
 }
 
 export interface DocApoio extends DocRecebido {
@@ -33,16 +35,6 @@ export interface Filial {
   id: string
   cnpj: string // só letras e números
   replica: Tri
-}
-
-export interface Regra {
-  id: string
-  grupos: string[]
-  modo: 'isolado' | 'conjunto'
-  limite: string // valor em reais, só dígitos
-  semLimite: boolean
-  requerAut: boolean
-  autorizacao: string
 }
 
 export type Situacao = 'analise' | 'aguardando' | 'finalizada'
@@ -72,8 +64,6 @@ export interface Note {
   dataGarantias: string
   temFiliais: Tri
   filiais: Filial[]
-  regras: Regra[]
-  quoruns: string
   anotacoes: string
 }
 
@@ -83,5 +73,4 @@ export type SectionKey =
   | 'docs'
   | 'garantidor'
   | 'filiais'
-  | 'assinaturas'
   | 'anotacoes'

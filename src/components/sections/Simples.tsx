@@ -48,11 +48,11 @@ export function Garantidor({ n }: { n: Note }) {
 export function Anotacoes({ n }: { n: Note }) {
   const editar = useNotes((s) => s.editar)
   return (
-    <Field label="Observações" htmlFor="f-anotacoes">
+    <Field label="Anotações" htmlFor="f-anotacoes">
       <TextArea
         id="f-anotacoes"
         value={n.anotacoes}
-        placeholder="Qualquer observação que precise constar no texto final…"
+        placeholder="Formas de assinatura, quóruns, autorizações e qualquer observação que precise constar no texto final…"
         onChange={(e) => editar((d) => void (d.anotacoes = e.target.value))}
       />
     </Field>

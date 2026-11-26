@@ -1,10 +1,9 @@
 {
-  "versao": "2026.11.26-1",
+  "versao": "2026.11.26-2",
   "data": "2026-11-26",
   "itens": [
-    "Visual novo, mais simples e mais fácil de ler",
-    "A etapa de validade da outorga saiu",
-    "\"Busca\" agora se chama \"Busca Ai\" (as anotações antigas já foram atualizadas)",
-    "Novos tipos de documento: Ata de Eleição e Ata de Autorização"
+    "Documento utilizado ganhou a caixinha \"Retirado da JUCESP\": vai no texto como \"Retirado da JUCESP, em anexo\" e entra na lista do que falta anexar",
+    "Ao colar filiais, só os CNPJs entram: agência, conta e outros dados ficam de fora",
+    "A etapa \"Formas de assinatura\" saiu: escreva nas Anotações (o que já estava preenchido foi levado para lá)"
   ]
 }

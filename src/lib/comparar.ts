@@ -1,7 +1,7 @@
 import type { Note, SectionKey } from './types'
 import { cnpjClean, cnpjFormat } from './cnpj'
 import { docLabel } from './analyze'
-import { mandatoTexto, regraTexto } from './generate'
+import { mandatoTexto } from './generate'
 
 export interface Mudanca {
   tipo: 'novo' | 'removido' | 'mudou'
@@ -66,14 +66,6 @@ export function comparar(atual: Note, ant: Note): Mudanca[] {
   if (novas.length) out.push({ tipo: 'novo', sec: 'filiais', texto: `${pl(novas.length, 'filial nova', 'filiais novas')}: ${amostra(novas.map(cnpjFormat))}` })
   if (saiu.length) out.push({ tipo: 'removido', sec: 'filiais', texto: `${pl(saiu.length, 'filial não aparece mais', 'filiais não aparecem mais')}: ${amostra(saiu.map(cnpjFormat))}` })
   if (replica.length) out.push({ tipo: 'mudou', sec: 'filiais', texto: `Réplica mudou em ${pl(replica.length, 'filial', 'filiais')}: ${amostra(replica.map((f) => cnpjFormat(f.cnpj)))}` })
-
-  // Formas de assinatura (pelo texto gerado, que usa os nomes dos grupos)
-  const rA = new Set(atual.regras.map((r) => regraTexto(atual, r)))
-  const rB = new Set(ant.regras.map((r) => regraTexto(ant, r)))
-  rA.forEach((r) => !rB.has(r) && out.push({ tipo: 'novo', sec: 'assinaturas', texto: `Forma de assinatura nova: ${r}` }))
-  rB.forEach((r) => !rA.has(r) && out.push({ tipo: 'removido', sec: 'assinaturas', texto: `Forma de assinatura que não está mais: ${r}` }))
-  if (atual.quoruns.trim() && ant.quoruns.trim() && norm(atual.quoruns) !== norm(ant.quoruns))
-    out.push({ tipo: 'mudou', sec: 'assinaturas', texto: 'O texto de quóruns e autorizações mudou' })
 
   return out
 }

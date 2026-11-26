@@ -237,7 +237,7 @@ export const useNotes = create<NotesState>()(
           get().criar(notaExemplo())
         },
 
-        // Copia grupos, documentos, filiais e formas de assinatura de outra análise do mesmo CNPJ.
+        // Copia grupos, documentos e filiais de outra análise do mesmo CNPJ.
         reaproveitarDe: (origemId) => {
           const origem = get().notes.find((n) => n.id === origemId)
           if (!origem || !get().currentId) return null
@@ -247,12 +247,7 @@ export const useNotes = create<NotesState>()(
           set((s) => {
             const n = s.notes.find((x) => x.id === s.currentId)
             if (!n) return
-            const mapa = new Map<string, string>()
-            n.grupos = src.grupos.map((g) => {
-              const id = uid()
-              mapa.set(g.id, id)
-              return { ...g, id }
-            })
+            n.grupos = src.grupos.map((g) => ({ ...g, id: uid() }))
             // A validação da procuração particular vale só para aquela proposta: precisa ser refeita.
             const doc = <T extends { id: string; tipo: string; validado: boolean }>(d: T): T => {
               if (d.tipo === PP && d.validado) procuracaoResetada = true
@@ -262,8 +257,6 @@ export const useNotes = create<NotesState>()(
             n.docsApoio = src.docsApoio.map(doc)
             n.temFiliais = src.temFiliais
             n.filiais = src.filiais.map((f) => ({ ...f, id: uid() }))
-            n.regras = src.regras.map((r) => ({ ...r, id: uid(), grupos: r.grupos.map((g) => mapa.get(g)).filter((g): g is string => !!g) }))
-            if (!n.quoruns.trim()) n.quoruns = src.quoruns
             if (!n.razaoSocial.trim()) n.razaoSocial = src.razaoSocial
             n.reaproveitar = 'feito'
             n.updatedAt = Date.now()

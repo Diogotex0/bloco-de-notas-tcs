@@ -1,5 +1,5 @@
 import type { Note } from './types'
-import { novaFilial, novaNota, novaRegra, novoApoio, novoGrupo, novoRecebido } from './defaults'
+import { novaFilial, novaNota, novoApoio, novoGrupo, novoRecebido } from './defaults'
 import { cnpjDV, cnpjFormat } from './cnpj'
 
 // Dados 100% fictícios, só para demonstração.
@@ -29,19 +29,13 @@ export function notaExemplo(): Note {
   const reps = [true, true, false, null, true]
   n.filiais = reps.map((r, i) => ({ ...novaFilial(cnpj(`11222333000${i + 2}`)), replica: r }))
 
-  n.regras = [
-    { ...novaRegra(), grupos: [diretor.id], modo: 'isolado', limite: '1000000' },
-    { ...novaRegra(), grupos: [diretor.id, adm.id], modo: 'conjunto', semLimite: true },
-    {
-      ...novaRegra(),
-      grupos: [proc.id],
-      modo: 'isolado',
-      limite: '500000',
-      requerAut: true,
-      autorizacao: 'aprovação da Diretoria Financeira',
-    },
-  ]
-  n.quoruns = 'Acima de R$ 5MM: DIRETOR em conjunto com ADMINISTRADOR, com aprovação prévia do Conselho.'
-  n.anotacoes = 'Procuração validada no ITI. Print anexado na proposta.'
+  n.anotacoes = [
+    'Formas de assinatura:',
+    '- DIRETOR · isoladamente · até R$ 1.000.000,00',
+    '- DIRETOR + ADMINISTRADOR · em conjunto · sem limite de valor',
+    '- PROCURADOR · isoladamente · até R$ 500.000,00 · requer autorização da Diretoria Financeira',
+    '',
+    'Procuração validada no ITI. Print anexado na proposta.',
+  ].join('\n')
   return n
 }

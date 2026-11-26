@@ -91,21 +91,12 @@ export function analisar(n: Note): Issue[] {
       add('warn', 'filiais', `${inv.length} ${plural(inv.length, 'CNPJ de filial inválido', 'CNPJs de filial inválidos')}`, `fil-${inv[0].id}`)
   }
 
-  // 6. Formas de assinatura (opcional)
-  n.regras.forEach((r, i) => {
-    const lbl = `Forma de assinatura ${i + 1}`
-    if (!r.grupos.some((id) => n.grupos.some((g) => g.id === id)))
-      add('warn', 'assinaturas', `${lbl}: selecione os grupos`, `${r.id}-grupos`)
-    if (!r.semLimite && !r.limite) add('warn', 'assinaturas', `${lbl}: informe o limite ou marque “sem limite”`, `${r.id}-limite`)
-    if (r.requerAut && !r.autorizacao.trim()) add('warn', 'assinaturas', `${lbl}: descreva a autorização`, `${r.id}-autorizacao`)
-  })
 
   const order: Record<Level, number> = { block: 0, warn: 1, info: 2 }
   return out.sort((a, b) => order[a.level] - order[b.level])
 }
 
 export function temConteudo(n: Note, key: SectionKey) {
-  if (key === 'assinaturas') return n.regras.length > 0 || !!n.quoruns.trim()
   if (key === 'anotacoes') return !!n.anotacoes.trim()
   return true
 }

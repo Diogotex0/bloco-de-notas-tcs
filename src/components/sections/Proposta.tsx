@@ -1,7 +1,6 @@
 import { CircleCheck, CircleAlert, ExternalLink } from 'lucide-react'
 import type { Note } from '../../lib/types'
-import { cnpjClean, cnpjFormat, cnpjValido, maskCnpjInput } from '../../lib/cnpj'
-import { extrairCnpjs } from '../../lib/colar'
+import { cnpjClean, cnpjFormat, cnpjValido, extrairCnpjs, maskCnpjInput } from '../../lib/cnpj'
 import { useNotes } from '../../store/notes'
 import { Button, Callout, Field, Reveal, Segmented, TextInput } from '../ui'
 import { abrirReceita } from '../../lib/actions'

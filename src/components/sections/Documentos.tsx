@@ -160,6 +160,17 @@ function Recebido({ d, i }: { d: DocRecebido; i: number }) {
               <DateInput id={`${d.id}-data`} value={d.data} onChange={(v) => setDoc('docsRecebidos', d.id, (x) => void (x.data = v))} />
             </Field>
           </div>
+          <div>
+            <Checkbox
+              id={`${d.id}-jucesp`}
+              checked={d.jucesp}
+              onChange={(v) => setDoc('docsRecebidos', d.id, (x) => void (x.jucesp = v))}
+              label="Retirado da JUCESP"
+            />
+            {d.jucesp && (
+              <p className="text-[12.5px] text-fg-3">Vai no texto como “Retirado da JUCESP, em anexo”. Lembre de anexar o documento na proposta.</p>
+            )}
+          </div>
         </div>
         <div className="pt-[22px]">
           <Remover lista="docsRecebidos" d={d} i={i} />

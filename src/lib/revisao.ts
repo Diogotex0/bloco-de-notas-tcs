@@ -3,7 +3,7 @@ import type { Note, SectionKey } from './types'
 import { SECTIONS } from './defaults'
 import { docLabel } from './analyze'
 import { fmtDate } from './dates'
-import { livroFolha, mandatoTexto, origemLabel, regraTexto } from './generate'
+import { livroFolha, mandatoTexto, origemLabel } from './generate'
 import { cnpjFormat } from './cnpj'
 
 export const useRevisao = create<{ aberta: boolean }>(() => ({ aberta: false }))
@@ -33,7 +33,7 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
         ? n.docsRecebidos.map((d) => ({
             rotulo: 'Utilizado',
             valor: d.tipo
-              ? [docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : ''), ...livroFolha(d), fmtDate(d.data)].filter(Boolean).join(' · ')
+              ? [docLabel(d) + (d.tipo === 'Procuração Particular' ? (d.validado ? ' (validada)' : ' (sem validação)') : ''), ...livroFolha(d), fmtDate(d.data), d.jucesp ? 'Retirado da JUCESP' : ''].filter(Boolean).join(' · ')
               : '',
           }))
         : [{ rotulo: 'Documento recebido', valor: '' }]),
@@ -59,10 +59,6 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
         ...(nd.length ? [{ rotulo: 'A definir', valor: lista(nd) }] : []),
       ]
     })(),
-    assinaturas: [
-      ...(n.regras.length ? n.regras.map((r, i) => ({ rotulo: `Forma ${i + 1}`, valor: regraTexto(n, r) })) : [{ rotulo: 'Formas de assinatura', valor: '', opcional: true }]),
-      { rotulo: 'Quóruns e autorizações', valor: n.quoruns.trim(), opcional: true },
-    ],
     anotacoes: [{ rotulo: 'Anotações', valor: n.anotacoes.trim(), opcional: true }],
   }
   return SECTIONS.map((s) => ({ key: s.key, titulo: s.title, linhas: L[s.key] }))

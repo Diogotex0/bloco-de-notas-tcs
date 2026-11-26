@@ -5,7 +5,7 @@ import type { Note } from '../lib/types'
 import type { Issue } from '../lib/analyze'
 import { temConteudo } from '../lib/analyze'
 import { SECTIONS } from '../lib/defaults'
-import { blocoAssinaturas, blocoDocumentos, blocoFiliais, blocoGrupos, gerarTexto } from '../lib/generate'
+import { blocoDocumentos, blocoFiliais, blocoGrupos, gerarTexto } from '../lib/generate'
 import { copiarTexto, irPara } from '../lib/actions'
 import { toast } from '../store/toast'
 import { abrirEditorModelo, useModelo } from '../store/modelo'
@@ -21,7 +21,6 @@ const PARTES: { nome: string; genero: 'o' | 'a'; gerar: (n: Note) => string[] }[
   { nome: 'Grupos', genero: 'o', gerar: blocoGrupos },
   { nome: 'Documentos', genero: 'o', gerar: blocoDocumentos },
   { nome: 'Filiais', genero: 'a', gerar: blocoFiliais },
-  { nome: 'Assinaturas', genero: 'a', gerar: blocoAssinaturas },
 ]
 
 export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Note, SectionKey } from './types'
-import { cnpjClean, cnpjFormat, cnpjValido } from './cnpj'
+import { cnpjClean, cnpjFormat, extrairCnpjs } from './cnpj'
 import { fmtDate, parseISO } from './dates'
 import { novaFilial } from './defaults'
 import { docLabel } from './analyze'
@@ -10,15 +10,6 @@ import { useNotes } from '../store/notes'
 import { toast } from '../store/toast'
 
 /* ---------- Reconhecer o que foi colado ---------- */
-
-const RE_CNPJ = /(?<![0-9A-Z])[0-9A-Z]{2}\.?[0-9A-Z]{3}\.?[0-9A-Z]{3}\/?[0-9A-Z]{4}-?\d{2}(?![0-9A-Z])/g
-
-/** Acha CNPJs num texto qualquer. Só aceita sequências que parecem mesmo CNPJ (válidas ou 14 dígitos). */
-export function extrairCnpjs(texto: string): string[] {
-  const achados = (texto.toUpperCase().match(RE_CNPJ) ?? []).map(cnpjClean)
-  const ok = achados.filter((c) => c.length === 14 && (cnpjValido(c) || /^\d{14}$/.test(c)))
-  return [...new Set(ok)]
-}
 
 export type Colado =
   | { tipo: 'cnpjs'; lista: string[] }

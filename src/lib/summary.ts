@@ -27,8 +27,6 @@ export function resumoEtapa(n: Note, k: SectionKey): string {
       const nao = n.filiais.filter((f) => f.replica === false).length
       return `${pl(n.filiais.length, 'filial', 'filiais')} · ${sim} com réplica · ${nao} sem`
     }
-    case 'assinaturas':
-      return n.regras.length ? pl(n.regras.length, 'forma de assinatura', 'formas de assinatura') : n.quoruns.trim() ? 'Quóruns preenchidos' : ''
     case 'anotacoes': {
       const t = n.anotacoes.trim().replace(/\s+/g, ' ')
       return t.length > 70 ? t.slice(0, 70) + '…' : t

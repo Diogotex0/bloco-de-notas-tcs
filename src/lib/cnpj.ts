@@ -34,6 +34,18 @@ export function cnpjValido(raw: string) {
   return cnpjDV(c.slice(0, 12)) === c.slice(12)
 }
 
+const RE_CNPJ = /(?<![0-9A-Z])[0-9A-Z]{2}\.?[0-9A-Z]{3}\.?[0-9A-Z]{3}\/?[0-9A-Z]{4}-?\d{2}(?![0-9A-Z])/g
+
+/**
+ * Acha os CNPJs num texto qualquer (ex.: copiado de um site com agência, conta, endereço…).
+ * Só aceita o que tem formato de CNPJ: válido, ou 14 dígitos seguidos. O resto do texto é ignorado.
+ */
+export function extrairCnpjs(texto: string): string[] {
+  const achados = (String(texto ?? '').toUpperCase().match(RE_CNPJ) ?? []).map(cnpjClean)
+  const ok = achados.filter((c) => c.length === 14 && (cnpjValido(c) || /^\d{14}$/.test(c)))
+  return [...new Set(ok)]
+}
+
 /** Reformata mantendo o cursor no mesmo caractere digitado. */
 export function maskCnpjInput(value: string, caret: number) {
   const before = cnpjClean(value.slice(0, caret)).length

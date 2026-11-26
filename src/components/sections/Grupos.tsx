@@ -52,7 +52,6 @@ export function Grupos({ n }: { n: Note }) {
                     onClick={() =>
                       removerComDesfazer(`Grupo ${g.nome.trim() || i + 1} removido`, (d) => {
                         d.grupos = d.grupos.filter((x) => x.id !== g.id)
-                        d.regras.forEach((r) => (r.grupos = r.grupos.filter((id) => id !== g.id)))
                       })
                     }
                   >

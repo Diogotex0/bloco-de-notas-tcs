@@ -37,16 +37,15 @@ O Bloco de Poderes resolve isso **sem mexer em nenhum sistema interno**: é só 
 
 ## ✨ O que ele faz
 
-### Anotação guiada, em 7 etapas
+### Anotação guiada, em 6 etapas
 | # | Etapa | O que tem |
 |---|---|---|
 | 1 | **Proposta** | CNPJ com máscara e validação (inclusive o novo CNPJ alfanumérico), nº da proposta, razão social, situação na Receita, botão que copia o CNPJ e abre a consulta da Receita |
 | 2 | **Grupos e mandatos** | Grupos com nome livre, início e fim do mandato ou indeterminado, aviso de mandato vencido |
-| 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca Ai, Junta Comercial, Sharefiche 1/2, proposta anterior ou outro). Tipos incluem Ata de Eleição e Ata de Autorização. Junta Comercial já marca "anexado na proposta" |
+| 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca Ai, Junta Comercial, Sharefiche 1/2, proposta anterior ou outro). Tipos incluem Ata de Eleição e Ata de Autorização. Documento utilizado pode ser marcado como "Retirado da JUCESP" (vai no texto e entra na lista de anexos). Junta Comercial já marca "anexado na proposta" |
 | 4 | **Garantidor** | Sim/Não + data da base (já vem com a data padrão da base de garantias) |
-| 5 | **Filiais** | Colar vários CNPJs de uma vez, marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
-| 6 | **Formas de assinatura** | Grupos isolados ou em conjunto, limite em R$ ou sem limite, autorização necessária, quóruns |
-| 7 | **Anotações** | Campo livre |
+| 5 | **Filiais** | Colar vários CNPJs de uma vez (mesmo com agência, conta e outros dados junto: só os CNPJs entram), marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
+| 6 | **Anotações** | Campo livre: formas de assinatura, quóruns e observações |
 
 Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi preenchido.
 
@@ -59,7 +58,7 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 - **Revisão antes de finalizar:** uma tela com tudo o que foi preenchido de um lado e o texto final do outro, mostrando o que está em branco.
 
 ### ⚡ Para ir mais rápido
-- **Texto final pronto** no modelo do time, com botão **Copiar** (e copiar por partes: só grupos, documentos, filiais ou assinaturas).
+- **Texto final pronto** no modelo do time, com botão **Copiar** (e copiar por partes: só grupos, documentos ou filiais).
 - **Colar inteligente:** aperte <kbd>Ctrl</kbd>+<kbd>V</kbd> fora dos campos e o bloco descobre o que é (CNPJ, vários CNPJs → filiais, nº da proposta, razão social, data → pergunta o campo).
 - **Data rápida:** digite `010524` → 01/05/2024. Também aceita `hoje` e `ontem`.
 - **Teclado:** <kbd>Enter</kbd> vai para o próximo campo, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> para a próxima etapa, letras escolhem opções (<kbd>S</kbd>/<kbd>N</kbd>).

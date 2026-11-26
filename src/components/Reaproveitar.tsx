@@ -9,7 +9,7 @@ import { Button, Reveal } from './ui'
 const pl = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`
 
 /** Só oferece quando a anotação atual ainda não tem grupos, documentos nem filiais (para não sobrescrever nada). */
-const semDados = (n: Note) => !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length && !n.filiais.length && !n.regras.length
+const semDados = (n: Note) => !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length && !n.filiais.length
 const temDados = (n: Note) => n.grupos.length + n.docsRecebidos.length + n.docsApoio.length + n.filiais.length > 0
 
 export function Reaproveitar({ n }: { n: Note }) {
