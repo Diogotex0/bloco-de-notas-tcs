@@ -1,10 +1,8 @@
 {
-  "versao": "2026.11.26-3",
+  "versao": "2026.11.26-4",
   "data": "2026-11-26",
   "itens": [
-    "Nova aba \"Finalização\" no painel: observação para o cliente e follow-up montados com o que você preencheu",
-    "Planilha de referência: carregue o .xlsx pelo rodapé da lista. Ela é lida só no seu navegador e libera respostas prontas (Alt + R), quórum por tipo societário, códigos de autorização por extenso e links da Junta",
-    "Grupos: opção de somar os 120 dias de prorrogação, e avisos de substabelecimento além do prazo e de procuração sem prazo em S/A",
-    "Proposta ganhou os campos Tipo societário e Estado (UF)"
+    "Respostas sugeridas: a aba Finalização e a janela de respostas (Alt + R) mostram as respostas da planilha que combinam com a anotação (mandato vencido, falta ata de eleição, duplicidade, procuração não validada, fundo)",
+    "Procuração particular: escolha como foi assinada (D4Sign, Clicksign, DocuSign…) e marque \"Não foi possível validar\" para abrir a pendência certa daquela plataforma"
   ]
 }

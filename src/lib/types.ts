@@ -25,6 +25,10 @@ export interface DocRecebido {
   folha: string
   /** Documento utilizado que foi retirado da JUCESP (precisa ir anexado na proposta). */
   jucesp: boolean
+  /** Plataforma da assinatura da procuração particular (D4Sign, Clicksign…). Vazio = não informada. */
+  plataforma: string
+  /** Tentou validar e não conseguiu: precisa pendenciar o cliente. */
+  semValidacao: boolean
 }
 
 export interface DocApoio extends DocRecebido {

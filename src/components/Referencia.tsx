@@ -6,7 +6,8 @@ import { normalizar } from '../lib/planilha'
 import { lacunas, preencher, RE_LACUNA } from '../lib/respostas'
 import { copiarTexto } from '../lib/actions'
 import { fmtDate } from '../lib/dates'
-import { useCurrent } from '../store/notes'
+import { useCurrent, useNotes } from '../store/notes'
+import { sugestoes } from '../lib/sugestoes'
 import { toast } from '../store/toast'
 import { confirmar } from '../store/confirm'
 import { abrirGerenciarPlanilha, carregarPlanilha, removerPlanilha, useReferencia } from '../store/referencia'
@@ -215,6 +216,15 @@ function RespostasProntas() {
   const fechar = useMemo(() => () => useReferencia.setState({ respostas: { aberta: false } }), [])
 
   const todas = ref?.respostas ?? []
+  const notas = useNotes((s) => s.notes)
+  const sugeridas = useMemo(
+    () => (n && ref ? sugestoes(n, ref, notas).flatMap((sg) => {
+      const i = todas.findIndex((r) => r.titulo === sg.titulo)
+      return i >= 0 ? [{ ...sg, i }] : []
+    }) : []),
+    [n, ref, notas, todas],
+  )
+
   const lista = useMemo(() => {
     const termo = normalizar(q)
     return todas.map((r, i) => ({ ...r, i })).filter((r) => !termo || normalizar(`${r.titulo} ${r.texto}`).includes(termo))
@@ -224,8 +234,9 @@ function RespostasProntas() {
   useEffect(() => {
     if (!aberta) return
     setQ('')
-    const alvo = inicial ? todas.findIndex((r) => normalizar(r.titulo).includes(normalizar(inicial))) : -1
-    setSel(alvo >= 0 ? alvo : 0)
+    const exato = inicial ? todas.findIndex((r) => r.titulo === inicial) : -1
+    const alvo = exato >= 0 ? exato : inicial ? todas.findIndex((r) => normalizar(r.titulo).includes(normalizar(inicial))) : -1
+    setSel(alvo >= 0 ? alvo : sugeridas[0]?.i ?? 0)
   }, [aberta]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Buscou e a resposta escolhida sumiu da lista: passa para a primeira que apareceu.
@@ -315,21 +326,17 @@ function RespostasProntas() {
               />
             </div>
             <ul className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
+              {!q.trim() && sugeridas.length > 0 && (
+                <>
+                  <li className="px-3 pt-1 pb-1 text-[11.5px] font-semibold text-fg-3">Para esta anotação</li>
+                  {sugeridas.map((r) => (
+                    <ItemResposta key={`s-${r.i}`} titulo={r.titulo} motivo={r.motivo} ativo={r.i === sel} onClick={() => setSel(r.i)} />
+                  ))}
+                  <li className="mt-2 border-t border-line px-3 pt-3 pb-1 text-[11.5px] font-semibold text-fg-3">Todas</li>
+                </>
+              )}
               {lista.map((r) => (
-                <li key={r.i}>
-                  <button
-                    type="button"
-                    onClick={() => setSel(r.i)}
-                    aria-current={r.i === sel ? 'true' : undefined}
-                    className={cx(
-                      'relative w-full rounded-sm px-3 py-2 text-left text-[13px] leading-snug transition-colors',
-                      r.i === sel ? 'bg-surface-3 font-medium text-fg' : 'text-fg-2 hover:bg-surface-2 hover:text-fg',
-                    )}
-                  >
-                    {r.i === sel && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
-                    {r.titulo}
-                  </button>
-                </li>
+                <ItemResposta key={r.i} titulo={r.titulo} ativo={r.i === sel} onClick={() => setSel(r.i)} />
               ))}
               {!lista.length && <li className="px-3 py-6 text-center text-[13px] text-fg-3">Nada encontrado para “{q}”.</li>}
             </ul>
@@ -380,6 +387,26 @@ function RespostasProntas() {
         </div>
       )}
     </Janela>
+  )
+}
+
+function ItemResposta({ titulo, motivo, ativo, onClick }: { titulo: string; motivo?: string; ativo: boolean; onClick: () => void }) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-current={ativo ? 'true' : undefined}
+        className={cx(
+          'relative w-full rounded-sm px-3 py-2 text-left text-[13px] leading-snug transition-colors',
+          ativo ? 'bg-surface-3 font-medium text-fg' : 'text-fg-2 hover:bg-surface-2 hover:text-fg',
+        )}
+      >
+        {ativo && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
+        {titulo}
+        {motivo && <span className="mt-0.5 block text-[12px] font-normal text-fg-3">{motivo}</span>}
+      </button>
+    </li>
   )
 }
 

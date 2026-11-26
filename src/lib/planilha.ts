@@ -38,7 +38,7 @@ export interface Referencia {
   versao: string
   carregadaEm: number
   respostas: Resposta[]
-  /** Códigos de autorização e parâmetros: { A02: "Maioria dos Sócios…", P11: "…" }. */
+  /** Códigos de autorização e parâmetros: { A02: "…", P11: "…" }. */
   codigos: Record<string, string>
   quoruns: Quorum[]
   quorumLegal: QuorumLegal[]

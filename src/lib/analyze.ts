@@ -73,7 +73,8 @@ export function analisar(n: Note): Issue[] {
     if (!d.tipo) add('warn', 'docs', `${kind} ${i + 1}: selecione o tipo`, `${d.id}-tipo`)
     if (d.tipo === 'Outro' && !d.tipoOutro.trim()) add('warn', 'docs', `${kind} ${i + 1}: descreva o documento`, `${d.id}-tipoOutro`)
     if (d.tipo === PP) {
-      if (!d.validado) add('block', 'docs', `${nome}: validação pendente`, `${d.id}-validado`)
+      if (!d.validado)
+        add('block', 'docs', d.semValidacao ? `${nome}: não foi possível validar, pendencie o cliente` : `${nome}: validação pendente`, `${d.id}-validado`)
       if (d.valMeio === 'Outro' && !d.valMeioOutro.trim())
         add('warn', 'docs', `${nome}: informe o meio de validação`, `${d.id}-valMeioOutro`)
     }

@@ -61,6 +61,8 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 - **Texto final pronto** no modelo do time, com botão **Copiar** (e copiar por partes: só grupos, documentos ou filiais).
 - **Finalização pronta:** a aba **Finalização** monta a observação para o cliente ("Cadastro de poderes conforme…") e o follow-up (grupos, documentos, filiais replicadas, garantidor, razão social, prorrogação) com o que já foi preenchido.
 - **Respostas prontas** (<kbd>Alt</kbd>+<kbd>R</kbd>): os textos de pendência e devolução da planilha de referência, com busca e com os dados da anotação já preenchidos; o que falta fica marcado.
+- **Respostas sugeridas:** o bloco olha a anotação e sugere a resposta certa (mandato vencido, falta contrato ou ata de eleição, documento já usado na análise anterior, procuração não validada, fundo).
+- **Procuração que não validou:** escolha como foi assinada (D4Sign, Clicksign, DocuSign, Certisign…) e marque "Não foi possível validar"; a pendência daquela plataforma abre pronta.
 - **Colar inteligente:** aperte <kbd>Ctrl</kbd>+<kbd>V</kbd> fora dos campos e o bloco descobre o que é (CNPJ, vários CNPJs → filiais, nº da proposta, razão social, data → pergunta o campo).
 - **Data rápida:** digite `010524` → 01/05/2024. Também aceita `hoje` e `ontem`.
 - **Teclado:** <kbd>Enter</kbd> vai para o próximo campo, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> para a próxima etapa, letras escolhem opções (<kbd>S</kbd>/<kbd>N</kbd>).

@@ -255,7 +255,7 @@ export const useNotes = create<NotesState>()(
             // A validação da procuração particular vale só para aquela proposta: precisa ser refeita.
             const doc = <T extends { id: string; tipo: string; validado: boolean }>(d: T): T => {
               if (d.tipo === PP && d.validado) procuracaoResetada = true
-              return { ...d, id: uid(), validado: d.tipo === PP ? false : d.validado }
+              return { ...d, id: uid(), validado: d.tipo === PP ? false : d.validado, semValidacao: false }
             }
             n.docsRecebidos = src.docsRecebidos.map(doc)
             n.docsApoio = src.docsApoio.map(doc)

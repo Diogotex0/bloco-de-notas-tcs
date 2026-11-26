@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { Lock, Plus, ShieldCheck, Trash2 } from 'lucide-react'
+import { Lock, MessageSquareText, Plus, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react'
 import type { DocApoio, DocRecebido, Note } from '../../lib/types'
-import { DOC_TIPOS, ORIGENS, PP, PUB, UFS, novoApoio, novoRecebido } from '../../lib/defaults'
+import { DOC_TIPOS, ORIGENS, PLATAFORMAS, PP, PUB, UFS, novoApoio, novoRecebido } from '../../lib/defaults'
+import { respostaDaPlataforma } from '../../lib/sugestoes'
 import { removerComDesfazer } from '../../lib/actions'
 import { useCurrent, useNotes } from '../../store/notes'
-import { abrirGerenciarPlanilha, linksJunta, useReferencia } from '../../store/referencia'
+import { abrirGerenciarPlanilha, abrirRespostas, linksJunta, useReferencia } from '../../store/referencia'
 import { LinkExterno } from '../LinkExterno'
 import { porId } from '../../lib/janela'
 import { Button, Callout, Checkbox, Field, IconButton, Reveal, Select, TextInput, cx, itemCard, itemMotion } from '../ui'
@@ -85,7 +86,10 @@ function LinkITI() {
 /** Caixa obrigatória da procuração particular. Enquanto não validada, a cópia fica bloqueada. */
 function ValidacaoPP({ d, lista }: { d: DocRecebido; lista: Lista }) {
   const setDoc = useSetDoc()
+  const ref = useReferencia((s) => s.ref)
   const ok = d.validado
+  const falhou = !ok && d.semValidacao
+  const resposta = falhou ? respostaDaPlataforma(ref, d) : undefined
   return (
     <motion.div
       layout
@@ -93,17 +97,31 @@ function ValidacaoPP({ d, lista }: { d: DocRecebido; lista: Lista }) {
       data-flash
     >
       <div className="flex items-start gap-2">
-        {ok ? <ShieldCheck className="mt-0.5 size-4 shrink-0 text-ok" /> : <Lock className="mt-0.5 size-4 shrink-0 text-bad" />}
+        {ok ? (
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-ok" />
+        ) : falhou ? (
+          <ShieldAlert className="mt-0.5 size-4 shrink-0 text-bad" />
+        ) : (
+          <Lock className="mt-0.5 size-4 shrink-0 text-bad" />
+        )}
         <div className="min-w-0">
           <p className={cx('text-[13.5px] font-semibold', ok ? 'text-fg' : 'text-bad')}>
-            {ok ? 'Procuração particular validada' : 'Validação da procuração particular obrigatória'}
+            {ok ? 'Procuração particular validada' : falhou ? 'Não foi possível validar a procuração' : 'Validação da procuração particular obrigatória'}
           </p>
           <p className="text-[12.5px] text-fg-2">
-            {ok ? 'Validação registrada e evidência anexada.' : 'Sem isso, o texto não pode ser copiado.'}
+            {ok ? 'Validação registrada e evidência anexada.' : falhou ? 'Pendencie o cliente. O texto continua bloqueado.' : 'Sem isso, o texto não pode ser copiado.'}
           </p>
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Como foi assinada" htmlFor={`${d.id}-plataforma`} optional>
+          <Select
+            id={`${d.id}-plataforma`}
+            value={d.plataforma}
+            onChange={(e) => setDoc(lista, d.id, (x) => void (x.plataforma = e.target.value))}
+            options={[['', 'Não informado'], ...PLATAFORMAS.map((p): [string, string] => [p.nome, p.nome])]}
+          />
+        </Field>
         <Field label="Meio de validação" htmlFor={`${d.id}-valMeio`}>
           <Select
             id={`${d.id}-valMeio`}
@@ -131,12 +149,50 @@ function ValidacaoPP({ d, lista }: { d: DocRecebido; lista: Lista }) {
           <LinkITI />
         </div>
       )}
-      <Checkbox
-        id={`${d.id}-validado`}
-        checked={d.validado}
-        onChange={(v) => setDoc(lista, d.id, (x) => void (x.validado = v))}
-        label={<span className="font-medium">Validação realizada e evidência anexada</span>}
-      />
+      <div className="flex flex-wrap gap-x-6">
+        <Checkbox
+          id={`${d.id}-validado`}
+          checked={d.validado}
+          onChange={(v) =>
+            setDoc(lista, d.id, (x) => {
+              x.validado = v
+              if (v) x.semValidacao = false
+            })
+          }
+          label={<span className="font-medium">Validação realizada e evidência anexada</span>}
+        />
+        <Checkbox
+          id={`${d.id}-semValidacao`}
+          checked={falhou}
+          onChange={(v) =>
+            setDoc(lista, d.id, (x) => {
+              x.semValidacao = v
+              if (v) x.validado = false
+            })
+          }
+          label="Não foi possível validar"
+        />
+      </div>
+      {falhou && (
+        <div className="flex flex-wrap items-center gap-2">
+          {resposta ? (
+            <Button size="sm" variant="outline" onClick={() => abrirRespostas(resposta)}>
+              <MessageSquareText /> Usar a pendência pronta: {resposta}
+            </Button>
+          ) : !ref ? (
+            <p className="text-[12.5px] text-fg-3">
+              <button type="button" onClick={abrirGerenciarPlanilha} className="font-medium text-primary-ink hover:underline">
+                Carregue a planilha de referência
+              </button>{' '}
+              para ter a pendência pronta desta plataforma.
+            </p>
+          ) : d.plataforma === 'Assinatura manuscrita' ? (
+            <p className="text-[12.5px] text-fg-3">A planilha não tem texto pronto para assinatura manuscrita.</p>
+          ) : (
+            <p className="text-[12.5px] text-fg-3">Escolha como a procuração foi assinada para ver a pendência certa.</p>
+          )}
+        </div>
+      )}
     </motion.div>
   )
 }

@@ -48,6 +48,23 @@ export const tipoSocietario = (n: Pick<Note, 'tipoSocietario'>) => TIPOS_SOCIETA
 
 export const UFS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
+/**
+ * Plataformas de assinatura da procuração particular. "resposta" acha, na planilha de referência,
+ * a pendência certa para quando não dá para validar (comparando com o título sem acento e em maiúsculas).
+ */
+export const PLATAFORMAS: { nome: string; resposta: RegExp | null }[] = [
+  { nome: 'Assinatura manuscrita', resposta: null },
+  { nome: 'D4Sign', resposta: /^D4 ?SIGN/ },
+  { nome: 'Clicksign', resposta: /^CLICK ?SIGN/ },
+  { nome: 'DocuSign (assinatura digital)', resposta: /^DOCUSIGN (DIGITAL|- VALIDACAO)/ },
+  { nome: 'DocuSign (assinatura eletrônica)', resposta: /^DOCUSIGN ELETRONICA/ },
+  { nome: 'Qualisign', resposta: /^QUALISIGN/ },
+  { nome: 'Certisign', resposta: /^CERTISIGN/ },
+  { nome: 'Certifica', resposta: /^CERTIFICA$/ },
+  { nome: 'RRSign', resposta: /^RR ?SIGN/ },
+  { nome: 'Outra assinatura digital', resposta: /PENDENCIA GENERICA/ },
+]
+
 /** Prorrogação automática do mandato de diretores/administradores. */
 export const PRORROGACAO_DIAS = 120
 
@@ -67,6 +84,7 @@ export const uid = () => Date.now().toString(36) + Math.random().toString(36).sl
 export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false, prorrogacao: false, substabeleceuDe: '' })
 export const novoRecebido = (): DocRecebido => ({
   id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '', livro: '', folha: '', jucesp: false,
+  plataforma: '', semValidacao: false,
 })
 export const novoApoio = (): DocApoio => ({
   ...novoRecebido(), origem: '', origemOutro: '', propostaAnterior: '', anexado: false,
@@ -157,8 +175,14 @@ export function normalizarNota(raw: unknown): Note | null {
   const idsGrupos = new Set(n.grupos.map((g) => g.id))
   for (const g of n.grupos) if (g.substabeleceuDe === g.id || !idsGrupos.has(g.substabeleceuDe)) g.substabeleceuDe = ''
   n.docsRecebidos = list(n.docsRecebidos, novoRecebido)
+  const plataformaOk = (d: DocRecebido) => {
+    if (!PLATAFORMAS.some((p) => p.nome === d.plataforma)) d.plataforma = ''
+    if (d.validado) d.semValidacao = false
+  }
+  n.docsRecebidos.forEach(plataformaOk)
   // "Busca" passou a se chamar "Busca Ai".
   n.docsApoio = list(n.docsApoio, novoApoio).map((d) => (d.origem === 'Busca' ? { ...d, origem: 'Busca Ai' } : d))
+  n.docsApoio.forEach(plataformaOk)
   n.filiais = list(n.filiais, () => novaFilial('')).map((f) => ({ ...f, cnpj: cnpjClean(f.cnpj) })).filter((f) => f.cnpj)
   // A etapa "Formas de assinatura" saiu: o que estava preenchido vai para as anotações.
   const assinaturas = assinaturasEmTexto(raw, n.grupos)

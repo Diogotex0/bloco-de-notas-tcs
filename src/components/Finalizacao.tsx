@@ -5,6 +5,8 @@ import { textoCliente, textoFollowUp } from '../lib/finalizacao'
 import { copiarTexto } from '../lib/actions'
 import { toast } from '../store/toast'
 import { abrirRespostas, useReferencia } from '../store/referencia'
+import { useNotes } from '../store/notes'
+import { sugestoes } from '../lib/sugestoes'
 import { Button, cx } from './ui'
 
 function Bloco({ titulo, desc, texto, vazio }: { titulo: string; desc: string; texto: string; vazio: string }) {
@@ -54,6 +56,8 @@ function Bloco({ titulo, desc, texto, vazio }: { titulo: string; desc: string; t
 /** Aba "Finalização" do painel: observação para o cliente e follow-up prontos para copiar. */
 export function Finalizacao({ n }: { n: Note }) {
   const ref = useReferencia((s) => s.ref)
+  const notas = useNotes((s) => s.notes)
+  const sugeridas = sugestoes(n, ref, notas)
   const cliente = textoCliente(n)
   const fup = textoFollowUp(n)
   const falta = /__\/__\/____|Livro __|Folha __/.test(cliente + fup)
@@ -72,6 +76,26 @@ export function Finalizacao({ n }: { n: Note }) {
         vazio="Preencha as etapas para montar o follow-up."
       />
       {falta && <p className="text-[12px] text-warn">Os trechos marcados estão em branco na anotação.</p>}
+      {sugeridas.length > 0 && (
+        <section className="border-t border-line pt-3">
+          <h3 className="text-[13px] font-semibold">Respostas sugeridas</h3>
+          <p className="mb-1.5 text-[12px] text-fg-3">Pelo que está preenchido nesta anotação.</p>
+          <ul className="grid gap-1">
+            {sugeridas.map((sg) => (
+              <li key={sg.titulo}>
+                <button
+                  type="button"
+                  onClick={() => abrirRespostas(sg.titulo)}
+                  className="w-full rounded-sm border border-line px-2.5 py-1.5 text-left transition-colors hover:border-line-strong hover:bg-surface-2"
+                >
+                  <span className="block text-[13px] font-medium text-fg">{sg.titulo}</span>
+                  <span className="block text-[12px] text-fg-3">{sg.motivo}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <div className="border-t border-line pt-3">
         <Button size="sm" variant="outline" onClick={() => abrirRespostas()}>
           <MessageSquareText /> Respostas prontas{ref ? ` (${ref.respostas.length})` : ''}
