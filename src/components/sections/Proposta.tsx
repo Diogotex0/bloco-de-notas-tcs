@@ -2,7 +2,8 @@ import { CircleCheck, CircleAlert, ExternalLink } from 'lucide-react'
 import type { Note } from '../../lib/types'
 import { cnpjClean, cnpjFormat, cnpjValido, extrairCnpjs, maskCnpjInput } from '../../lib/cnpj'
 import { useNotes } from '../../store/notes'
-import { Button, Callout, Field, Reveal, Segmented, TextInput } from '../ui'
+import { Button, Callout, Field, Reveal, Segmented, Select, TextInput } from '../ui'
+import { TIPOS_SOCIETARIOS, UFS } from '../../lib/defaults'
 import { abrirReceita } from '../../lib/actions'
 import { Reaproveitar } from '../Reaproveitar'
 
@@ -92,6 +93,25 @@ export function Proposta({ n }: { n: Note }) {
           onChange={(e) => editar((d) => void (d.razaoSocial = e.target.value))}
         />
       </Field>
+
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_140px]">
+        <Field label="Tipo societário" htmlFor="f-tipoSocietario" optional>
+          <Select
+            id="f-tipoSocietario"
+            value={n.tipoSocietario}
+            onChange={(e) => editar((d) => void (d.tipoSocietario = e.target.value))}
+            options={[['', 'Não informado'], ...TIPOS_SOCIETARIOS.map((t): [string, string] => [t.nome, t.nome])]}
+          />
+        </Field>
+        <Field label="Estado (UF)" htmlFor="f-uf" optional>
+          <Select
+            id="f-uf"
+            value={n.uf}
+            onChange={(e) => editar((d) => void (d.uf = e.target.value))}
+            options={[['', '—'], ...UFS.map((u): [string, string] => [u, u])]}
+          />
+        </Field>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Situação da razão social">

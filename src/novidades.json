@@ -1,9 +1,10 @@
 {
-  "versao": "2026.11.26-2",
+  "versao": "2026.11.26-3",
   "data": "2026-11-26",
   "itens": [
-    "Documento utilizado ganhou a caixinha \"Retirado da JUCESP\": vai no texto como \"Retirado da JUCESP, em anexo\" e entra na lista do que falta anexar",
-    "Ao colar filiais, só os CNPJs entram: agência, conta e outros dados ficam de fora",
-    "A etapa \"Formas de assinatura\" saiu: escreva nas Anotações (o que já estava preenchido foi levado para lá)"
+    "Nova aba \"Finalização\" no painel: observação para o cliente e follow-up montados com o que você preencheu",
+    "Planilha de referência: carregue o .xlsx pelo rodapé da lista. Ela é lida só no seu navegador e libera respostas prontas (Alt + R), quórum por tipo societário, códigos de autorização por extenso e links da Junta",
+    "Grupos: opção de somar os 120 dias de prorrogação, e avisos de substabelecimento além do prazo e de procuração sem prazo em S/A",
+    "Proposta ganhou os campos Tipo societário e Estado (UF)"
   ]
 }

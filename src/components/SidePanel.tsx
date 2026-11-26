@@ -10,12 +10,13 @@ import { copiarTexto, irPara } from '../lib/actions'
 import { toast } from '../store/toast'
 import { abrirEditorModelo, useModelo } from '../store/modelo'
 import { CopyButton } from './CopyButton'
+import { Finalizacao } from './Finalizacao'
 import { cx } from './ui'
 
 const icone = { block: Lock, warn: CircleAlert, info: Info }
 const cor = { block: 'text-bad', warn: 'text-warn', info: 'text-primary-ink' }
 
-type Aba = 'pendencias' | 'texto'
+type Aba = 'pendencias' | 'texto' | 'finalizacao'
 
 const PARTES: { nome: string; genero: 'o' | 'a'; gerar: (n: Note) => string[] }[] = [
   { nome: 'Grupos', genero: 'o', gerar: blocoGrupos },
@@ -35,6 +36,7 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
   const abas: { k: Aba; label: string; badge?: number }[] = [
     { k: 'pendencias', label: 'Pendências', badge: pend },
     { k: 'texto', label: 'Texto final' },
+    { k: 'finalizacao', label: 'Finalização' },
   ]
 
   return (
@@ -60,14 +62,14 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
       </div>
 
       {/* Abas */}
-      <div className="mt-3 flex items-center gap-4 border-b border-line px-4">
+      <div className="mt-3 flex items-center gap-3 border-b border-line px-4">
         {abas.map((a) => (
           <button
             key={a.k}
             type="button"
             onClick={() => setAba(a.k)}
             className={cx(
-              'relative flex h-10 items-center gap-1.5 px-1 text-[13px] font-medium transition-colors',
+              'relative flex h-10 items-center gap-1.5 px-0.5 text-[13px] font-medium whitespace-nowrap transition-colors',
               aba === a.k ? 'text-fg' : 'text-fg-3 hover:text-fg-2',
             )}
           >
@@ -80,9 +82,11 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
             {aba === a.k && <span className="absolute inset-x-0 -bottom-px h-0.5 bg-fg" />}
           </button>
         ))}
-        <div className="ml-auto py-1.5">
-          <CopyButton bloqueado={bloqueado} label="Copiar" variant="soft" size="sm" />
-        </div>
+        {aba !== 'finalizacao' && (
+          <div className="ml-auto py-1.5">
+            <CopyButton bloqueado={bloqueado} label="Copiar" variant="soft" size="sm" />
+          </div>
+        )}
       </div>
 
       {/* Conteúdo da aba */}
@@ -124,6 +128,10 @@ export function SidePanel({ n, issues }: { n: Note; issues: Issue[] }) {
               </AnimatePresence>
               {issues.length > 0 && <p className="px-2.5 pt-2 text-[12px] text-fg-3">Clique num item para ir até o campo.</p>}
             </motion.ul>
+          ) : aba === 'finalizacao' ? (
+            <motion.div key="f" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
+              <Finalizacao n={n} />
+            </motion.div>
           ) : (
             <motion.div key="t" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
               <div className="mb-2.5 flex flex-wrap items-center gap-1.5">

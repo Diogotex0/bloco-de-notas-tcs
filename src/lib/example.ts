@@ -11,8 +11,10 @@ export function notaExemplo(): Note {
   n.proposta = '2026-004871'
   n.razaoSocial = 'Alfa Distribuidora de Peças Ltda'
   n.receita = 'ativo'
+  n.tipoSocietario = 'LTDA'
+  n.uf = 'SP'
 
-  const diretor = { ...novoGrupo('DIRETOR'), inicio: '2024-05-01', duracao: '2028-04-30' }
+  const diretor = { ...novoGrupo('DIRETOR'), inicio: '2024-05-01', duracao: '2028-04-30', prorrogacao: true }
   const adm = { ...novoGrupo('ADMINISTRADOR'), inicio: '2021-03-10', indeterminado: true }
   const proc = { ...novoGrupo('PROCURADOR'), inicio: '2026-03-15', duracao: '2027-03-15' }
   n.grupos = [diretor, adm, proc]

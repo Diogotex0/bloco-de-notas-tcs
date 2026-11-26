@@ -22,6 +22,8 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
       { rotulo: 'CNPJ', valor: n.cnpj },
       { rotulo: 'Nº da proposta', valor: n.proposta.trim() },
       { rotulo: 'Razão social', valor: n.razaoSocial.trim() },
+      { rotulo: 'Tipo societário', valor: n.tipoSocietario, opcional: true },
+      { rotulo: 'Estado (UF)', valor: n.uf, opcional: true },
       { rotulo: 'Situação da razão social', valor: n.razaoAlterada ? 'Alterada' : 'Não alterada' },
       { rotulo: 'Receita Federal', valor: n.receita === 'ativo' ? 'Ativo' : n.receita === 'inativo' ? 'Inativo' : '', opcional: true },
     ],

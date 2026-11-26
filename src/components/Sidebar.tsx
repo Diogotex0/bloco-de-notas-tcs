@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Archive, BellOff, BellRing, Download, FileText, Settings2, Moon, Plus, Search, Sun, Upload, X } from 'lucide-react'
+import { Archive, BellOff, BellRing, Download, FileSpreadsheet, FileText, Settings2, Moon, Plus, Search, Sun, Upload, X } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { analisar, statusDe, type NoteStatus } from '../lib/analyze'
 import { notaVazia } from '../lib/defaults'
@@ -12,6 +12,7 @@ import { useUi, type Filtro } from '../store/ui'
 import { janela } from '../lib/janela'
 import { alternarLembrete, useLembrete } from '../lib/lembrete'
 import { abrirEditorModelo } from '../store/modelo'
+import { abrirGerenciarPlanilha, useReferencia } from '../store/referencia'
 import { Button, IconButton, Kbd, cx } from './ui'
 
 const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
@@ -65,6 +66,7 @@ export function Sidebar() {
   const filtro = useUi((s) => s.filtro)
   const lembrete = useLembrete((s) => s.ativo)
   const setFiltro = useUi((s) => s.setFiltro)
+  const planilha = useReferencia((s) => s.ref)
   const [q, setQ] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -218,6 +220,20 @@ export function Sidebar() {
             }}
           >
             Carregar exemplo
+          </RodapeBtn>
+          <RodapeBtn
+            icon={<FileSpreadsheet />}
+            onClick={() => {
+              abrirGerenciarPlanilha()
+              setNav(false)
+            }}
+          >
+            <span className="flex min-w-0 flex-1 items-center justify-between gap-2 whitespace-nowrap">
+              Planilha de referência
+              <span className={cx('text-[11.5px]', planilha ? 'text-fg-3' : 'text-warn')} title={planilha?.versao || undefined}>
+                {planilha ? (/(\d+)/.exec(planilha.versao)?.[1] ? `v${/(\d+)/.exec(planilha.versao)![1]}` : 'ok') : 'carregar'}
+              </span>
+            </span>
           </RodapeBtn>
           <div className="flex items-center gap-1">
             <IconButton label="Modelo do texto (ordem, rótulos e frases)" onClick={abrirEditorModelo}>

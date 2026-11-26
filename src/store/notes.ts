@@ -91,7 +91,8 @@ interface NotesState {
   currentId: string | null
   criar: (base?: Note) => string
   abrir: (id: string | null) => void
-  editar: (fn: (n: Note) => void) => void
+  /** passo = vira um passo próprio no desfazer (não junta com a digitação). */
+  editar: (fn: (n: Note) => void, passo?: boolean) => void
   /** Manda para a lixeira (não apaga). */
   excluir: (id: string) => void
   tirarDaLixeira: (id: string) => void
@@ -138,8 +139,8 @@ export const useNotes = create<NotesState>()(
             s.currentId = id && s.notes.some((n) => n.id === id) ? id : null
           }),
 
-        editar: (fn) => {
-          registrar(get().notes.find((x) => x.id === get().currentId), true)
+        editar: (fn, passo = false) => {
+          registrar(get().notes.find((x) => x.id === get().currentId), !passo)
           set((s) => {
             const n = s.notes.find((x) => x.id === s.currentId)
             if (!n) return
@@ -247,7 +248,10 @@ export const useNotes = create<NotesState>()(
           set((s) => {
             const n = s.notes.find((x) => x.id === s.currentId)
             if (!n) return
-            n.grupos = src.grupos.map((g) => ({ ...g, id: uid() }))
+            const novosIds = new Map(src.grupos.map((g) => [g.id, uid()]))
+            n.grupos = src.grupos.map((g) => ({ ...g, id: novosIds.get(g.id)!, substabeleceuDe: novosIds.get(g.substabeleceuDe) ?? '' }))
+            if (!n.tipoSocietario) n.tipoSocietario = src.tipoSocietario
+            if (!n.uf) n.uf = src.uf
             // A validação da procuração particular vale só para aquela proposta: precisa ser refeita.
             const doc = <T extends { id: string; tipo: string; validado: boolean }>(d: T): T => {
               if (d.tipo === PP && d.validado) procuracaoResetada = true

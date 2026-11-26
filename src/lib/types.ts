@@ -6,6 +6,10 @@ export interface Grupo {
   inicio: string // yyyy-mm-dd
   duracao: string // fim do mandato, yyyy-mm-dd
   indeterminado: boolean
+  /** Soma os 120 dias de prorrogação automática do mandato (diretores/administradores). */
+  prorrogacao: boolean
+  /** Id do grupo que substabeleceu os poderes para este (vazio = não veio de substabelecimento). */
+  substabeleceuDe: string
 }
 
 export interface DocRecebido {
@@ -56,6 +60,10 @@ export interface Note {
   proposta: string
   razaoSocial: string
   razaoAlterada: boolean
+  /** Tipo societário (LTDA, S/A, Cooperativa…). Vazio = não informado. */
+  tipoSocietario: string
+  /** Sigla do estado da empresa, para achar a Junta Comercial. */
+  uf: string
   receita: '' | 'ativo' | 'inativo'
   grupos: Grupo[]
   docsRecebidos: DocRecebido[]

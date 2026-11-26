@@ -64,6 +64,7 @@ export function proximaEtapa(atual?: SectionKey | null) {
 export function tratarEnter(e: KeyboardEvent): boolean {
   if (e.key !== 'Enter' || e.shiftKey || e.altKey || e.defaultPrevented) return false
   const t = e.target as HTMLElement
+  if (t.closest?.('[role="dialog"]')) return false // dentro de uma janela, o Enter é da janela
   const sec = t.closest?.('section[id^="sec-"]')
   const chave = (sec?.id.slice(4) ?? null) as SectionKey | null
 

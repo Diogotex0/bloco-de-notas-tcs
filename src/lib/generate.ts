@@ -1,5 +1,6 @@
 import type { DocApoio, DocRecebido, Grupo, Note, Tri } from './types'
-import { PP, PUB } from './defaults'
+import { PP, PRORROGACAO_DIAS, PUB } from './defaults'
+import { temProrrogacao, vigencia } from './mandato'
 import { cnpjFormat } from './cnpj'
 import { fmtDate } from './dates'
 import { docLabel } from './analyze'
@@ -26,8 +27,9 @@ export function mandatoTexto(g: Grupo) {
   const ini = fmtDate(g.inicio)
   const fim = fmtDate(g.duracao)
   if (g.indeterminado) return ini ? `de ${ini}, prazo indeterminado` : 'prazo indeterminado'
-  if (ini && fim) return `de ${ini} a ${fim}`
-  if (fim) return `até ${fim}`
+  const prorr = temProrrogacao(g) ? ` (+${PRORROGACAO_DIAS} dias de prorrogação: vigente até ${fmtDate(vigencia(g))})` : ''
+  if (ini && fim) return `de ${ini} a ${fim}${prorr}`
+  if (fim) return `até ${fim}${prorr}`
   if (ini) return `a partir de ${ini}`
   return '—'
 }

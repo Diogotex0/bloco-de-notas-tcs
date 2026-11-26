@@ -9,6 +9,7 @@ import { AnexosDialog } from './Anexos'
 import { RevisaoDialog } from './Revisao'
 import { ModeloEditor } from './ModeloEditor'
 import { ConfirmDialog } from './ConfirmDialog'
+import { ReferenciaDialogs } from './Referencia'
 import { Toaster } from './Shell'
 import { Button } from './ui'
 
@@ -86,8 +87,9 @@ export function Overlays() {
   return (
     <>
       <Toaster />
-      <ConfirmDialog />
       <RevisaoDialog />
+      <ReferenciaDialogs />
+      <ConfirmDialog />
       <ModeloEditor />
       <AnexosDialog />
       <ColarDataDialog />

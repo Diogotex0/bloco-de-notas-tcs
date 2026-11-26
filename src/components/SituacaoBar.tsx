@@ -1,10 +1,11 @@
-import { ArchiveRestore, Trash2 } from 'lucide-react'
+import { ArchiveRestore, MessageSquareText, Trash2 } from 'lucide-react'
 import type { Note, Situacao } from '../lib/types'
 import { excluirDeVez } from '../lib/actions'
 import { diasRestantesLixeira, useNotes } from '../store/notes'
 import { useUi } from '../store/ui'
 import { toast } from '../store/toast'
 import { abrirRevisao } from '../lib/revisao'
+import { abrirRespostas } from '../store/referencia'
 import { Button, Segmented } from './ui'
 
 const NOMES: Record<Situacao, string> = {
@@ -70,6 +71,16 @@ export function SituacaoBar({ n }: { n: Note }) {
           { value: 'finalizada' as const, label: NOMES.finalizada },
         ]}
       />
+      {n.situacao === 'aguardando' && (
+        <button
+          type="button"
+          onClick={() => abrirRespostas()}
+          title="Textos de pendência e devolução da planilha de referência (Alt + R)"
+          className="inline-flex h-7 items-center gap-1.5 rounded-sm px-1.5 text-[12.5px] font-medium text-primary-ink hover:bg-primary-soft"
+        >
+          <MessageSquareText className="size-3.5" /> Respostas prontas
+        </button>
+      )}
     </div>
   )
 }

@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { Plus, Trash2 } from 'lucide-react'
 import type { Grupo, Note } from '../../lib/types'
-import { SUGESTOES_GRUPO, novoGrupo } from '../../lib/defaults'
-import { parseISO, today } from '../../lib/dates'
+import { PRORROGACAO_DIAS, SUGESTOES_GRUPO, novoGrupo } from '../../lib/defaults'
+import { fmtDate, parseISO, toISO, today } from '../../lib/dates'
+import { excessoSubstabelecimento, fimDiretoria, podeProrrogar, procuracaoSemPrazoSA, temProrrogacao, vigencia } from '../../lib/mandato'
 import { removerComDesfazer } from '../../lib/actions'
 import { useNotes } from '../../store/notes'
 import { porId } from '../../lib/janela'
-import { Button, Checkbox, Field, IconButton, Tag, TextInput, cx, itemCard, itemMotion } from '../ui'
+import { Button, Callout, Checkbox, Field, IconButton, Select, Tag, TextInput, cx, itemCard, itemMotion } from '../ui'
 import { DateInput } from '../DateInput'
 
 export function Grupos({ n }: { n: Note }) {
@@ -24,6 +25,10 @@ export function Grupos({ n }: { n: Note }) {
       if (g) fn(g)
     })
 
+  // O campo "recebeu por substabelecimento" só aparece quando faz sentido.
+  const temSubstab = n.docsRecebidos.some((d) => d.tipo === 'Substabelecimento') || n.grupos.some((g) => g.substabeleceuDe)
+  const limiteDiretoria = fimDiretoria(n)
+
   return (
     <div className="grid gap-3">
       <div className="relative grid gap-2.5">
@@ -32,7 +37,11 @@ export function Grupos({ n }: { n: Note }) {
             const ini = parseISO(g.inicio)
             const fim = !g.indeterminado ? parseISO(g.duracao) : null
             const invertido = !!(ini && fim && fim < ini)
-            const vencido = !invertido && !!fim && fim < today()
+            const vig = vigencia(g)
+            const vencido = !invertido && !!vig && vig < today()
+            const semPrazoSA = procuracaoSemPrazoSA(n, g)
+            const excesso = excessoSubstabelecimento(n, g)
+            const outros = n.grupos.filter((x) => x.id !== g.id)
             return (
               <motion.div key={g.id} {...itemMotion} className={cx(itemCard, 'grid gap-3')}>
                 <div className="flex items-end gap-2">
@@ -79,10 +88,83 @@ export function Grupos({ n }: { n: Note }) {
                     label="Indeterminado"
                   />
                 </div>
+                {podeProrrogar(g) && (
+                  <div>
+                    <Checkbox
+                      id={`${g.id}-prorrogacao`}
+                      checked={g.prorrogacao}
+                      onChange={(v) => set(g.id, (x) => void (x.prorrogacao = v))}
+                      label={`Somar ${PRORROGACAO_DIAS} dias de prorrogação automática`}
+                    />
+                    {temProrrogacao(g) && (
+                      <p className="text-[12.5px] text-fg-2">
+                        Vigente até <strong className="font-semibold text-fg tabular-nums">{fmtDate(vig)}</strong>. Vai no texto e no follow-up.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {temSubstab && outros.length > 0 && (
+                  <Field label="Recebeu os poderes por substabelecimento de" htmlFor={`${g.id}-substab`} optional>
+                    <Select
+                      id={`${g.id}-substab`}
+                      value={g.substabeleceuDe}
+                      onChange={(e) => set(g.id, (x) => void (x.substabeleceuDe = e.target.value))}
+                      options={[['', 'Não veio de substabelecimento'], ...outros.map((o, j): [string, string] => [o.id, o.nome.trim() || `Grupo ${n.grupos.indexOf(o) + 1 || j + 1}`])]}
+                    />
+                  </Field>
+                )}
+
                 {(invertido || vencido) && (
                   <div>
                     <Tag tone="bad">{invertido ? 'O fim está antes do início' : 'Mandato vencido'}</Tag>
                   </div>
+                )}
+
+                {semPrazoSA && (
+                  <Callout tone="warn">
+                    Em S/A, procuração sem prazo (ou “por prazo indeterminado”) é cadastrada até o fim do mandato da diretoria, se o estatuto não
+                    definir outro prazo (art. 144, parágrafo único, da Lei das S/A).
+                    {limiteDiretoria ? (
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            set(g.id, (x) => {
+                              x.indeterminado = false
+                              x.duracao = toISO(limiteDiretoria)
+                            })
+                          }
+                        >
+                          Usar {fmtDate(limiteDiretoria)} (fim da diretoria)
+                        </Button>
+                      </div>
+                    ) : (
+                      <p className="mt-1 text-fg-2">Cadastre o grupo da diretoria com o fim do mandato para o bloco sugerir a data.</p>
+                    )}
+                  </Callout>
+                )}
+
+                {excesso && (
+                  <Callout tone="warn">
+                    O substabelecimento não pode valer por mais tempo que {excesso.origem.nome.trim() || 'quem substabeleceu'}, que vai até{' '}
+                    {fmtDate(excesso.limite)}.
+                    <div className="mt-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          set(g.id, (x) => {
+                            x.indeterminado = false
+                            x.duracao = toISO(excesso.limite)
+                          })
+                        }
+                      >
+                        Ajustar para {fmtDate(excesso.limite)}
+                      </Button>
+                    </div>
+                  </Callout>
                 )}
               </motion.div>
             )

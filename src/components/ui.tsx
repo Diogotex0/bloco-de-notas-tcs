@@ -93,8 +93,13 @@ export function TextInput({ className, ...p }: ComponentProps<'input'>) {
   return <input autoComplete="off" spellCheck={false} {...p} className={cx(inputBase, className)} />
 }
 
-export function TextArea({ className, value, ...p }: ComponentProps<'textarea'>) {
+export function TextArea({ className, value, ref: refExterno, ...p }: ComponentProps<'textarea'>) {
   const ref = useRef<HTMLTextAreaElement>(null)
+  const juntarRefs = (el: HTMLTextAreaElement | null) => {
+    ref.current = el
+    if (typeof refExterno === 'function') refExterno(el)
+    else if (refExterno) refExterno.current = el
+  }
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
@@ -103,7 +108,7 @@ export function TextArea({ className, value, ...p }: ComponentProps<'textarea'>)
   }, [value])
   return (
     <textarea
-      ref={ref}
+      ref={juntarRefs}
       rows={3}
       value={value}
       {...p}

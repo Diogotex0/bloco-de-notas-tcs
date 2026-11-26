@@ -26,6 +26,10 @@ export function addMonths(d: Date, months: number) {
   return new Date(y, m, Math.min(d.getDate(), last))
 }
 
+export const addDays = (d: Date, dias: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + dias)
+
+export const toISO = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+
 export const daysBetween = (a: Date, b: Date) => Math.round((b.getTime() - a.getTime()) / 864e5)
 
 export function relTime(ts: number) {

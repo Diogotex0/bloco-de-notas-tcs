@@ -2,6 +2,7 @@ import type { DocRecebido, Note, SectionKey } from './types'
 import { PP, PUB } from './defaults'
 import { cnpjClean, cnpjValido } from './cnpj'
 import { fmtDate, parseISO, today } from './dates'
+import { excessoSubstabelecimento, fimDiretoria, procuracaoSemPrazoSA, temProrrogacao, vigencia } from './mandato'
 
 export type Level = 'block' | 'warn' | 'info'
 export interface Issue {
@@ -39,8 +40,30 @@ export function analisar(n: Note): Issue[] {
       const fim = parseISO(g.duracao)
       if (!fim) add('warn', 'grupos', `${nome}: informe o fim do mandato ou marque indeterminado`, `${g.id}-duracao`)
       else if (ini && fim < ini) add('warn', 'grupos', `${nome}: o fim está antes do início`, `${g.id}-duracao`)
-      else if (fim < today()) add('warn', 'grupos', `${nome}: mandato vencido em ${fmtDate(fim)}`, `${g.id}-duracao`)
+      else {
+        const vig = vigencia(g) ?? fim
+        if (vig < today())
+          add('warn', 'grupos', `${nome}: mandato vencido em ${fmtDate(vig)}${temProrrogacao(g) ? ' (já com os 120 dias)' : ''}`, `${g.id}-duracao`)
+        else if (fim < today()) add('info', 'grupos', `${nome}: mandato terminou em ${fmtDate(fim)}, vigente pela prorrogação até ${fmtDate(vig)}`, `${g.id}-prorrogacao`)
+      }
     }
+    if (procuracaoSemPrazoSA(n, g)) {
+      const lim = fimDiretoria(n)
+      add(
+        'warn',
+        'grupos',
+        `${nome}: em S/A, procuração sem prazo vai até o fim do mandato da diretoria${lim ? ` (${fmtDate(lim)})` : ''}`,
+        `${g.id}-indet`,
+      )
+    }
+    const exc = excessoSubstabelecimento(n, g)
+    if (exc)
+      add(
+        'warn',
+        'grupos',
+        `${nome}: o substabelecimento não pode passar do prazo de ${exc.origem.nome.trim() || 'quem substabeleceu'} (${fmtDate(exc.limite)})`,
+        `${g.id}-duracao`,
+      )
   })
 
   // 3. Documentos

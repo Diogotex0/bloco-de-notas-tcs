@@ -40,12 +40,12 @@ O Bloco de Poderes resolve isso **sem mexer em nenhum sistema interno**: é só 
 ### Anotação guiada, em 6 etapas
 | # | Etapa | O que tem |
 |---|---|---|
-| 1 | **Proposta** | CNPJ com máscara e validação (inclusive o novo CNPJ alfanumérico), nº da proposta, razão social, situação na Receita, botão que copia o CNPJ e abre a consulta da Receita |
-| 2 | **Grupos e mandatos** | Grupos com nome livre, início e fim do mandato ou indeterminado, aviso de mandato vencido |
+| 1 | **Proposta** | CNPJ com máscara e validação (inclusive o novo CNPJ alfanumérico), nº da proposta, razão social, tipo societário e estado (UF), situação na Receita, botão que copia o CNPJ e abre a consulta da Receita |
+| 2 | **Grupos e mandatos** | Grupos com nome livre, início e fim do mandato ou indeterminado, aviso de mandato vencido. Opção de somar os 120 dias de prorrogação automática (a data final vai no texto). Avisa quando o substabelecimento passa do prazo de quem substabeleceu e quando, em S/A, a procuração está sem prazo (vai até o fim do mandato da diretoria) |
 | 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca Ai, Junta Comercial, Sharefiche 1/2, proposta anterior ou outro). Tipos incluem Ata de Eleição e Ata de Autorização. Documento utilizado pode ser marcado como "Retirado da JUCESP" (vai no texto e entra na lista de anexos). Junta Comercial já marca "anexado na proposta" |
-| 4 | **Garantidor** | Sim/Não + data da base (já vem com a data padrão da base de garantias) |
+| 4 | **Garantidor** | Sim/Não + data da base (já vem com a data padrão da base de garantias). Com a planilha de referência carregada, mostra o quórum de garantias do tipo societário |
 | 5 | **Filiais** | Colar vários CNPJs de uma vez (mesmo com agência, conta e outros dados junto: só os CNPJs entram), marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
-| 6 | **Anotações** | Campo livre: formas de assinatura, quóruns e observações |
+| 6 | **Anotações** | Campo livre: formas de assinatura, quóruns e observações. Com a planilha carregada, digitar um código de autorização (ex.: `A02` e espaço) escreve o texto por extenso |
 
 Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi preenchido.
 
@@ -59,6 +59,8 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 
 ### ⚡ Para ir mais rápido
 - **Texto final pronto** no modelo do time, com botão **Copiar** (e copiar por partes: só grupos, documentos ou filiais).
+- **Finalização pronta:** a aba **Finalização** monta a observação para o cliente ("Cadastro de poderes conforme…") e o follow-up (grupos, documentos, filiais replicadas, garantidor, razão social, prorrogação) com o que já foi preenchido.
+- **Respostas prontas** (<kbd>Alt</kbd>+<kbd>R</kbd>): os textos de pendência e devolução da planilha de referência, com busca e com os dados da anotação já preenchidos; o que falta fica marcado.
 - **Colar inteligente:** aperte <kbd>Ctrl</kbd>+<kbd>V</kbd> fora dos campos e o bloco descobre o que é (CNPJ, vários CNPJs → filiais, nº da proposta, razão social, data → pergunta o campo).
 - **Data rápida:** digite `010524` → 01/05/2024. Também aceita `hoje` e `ontem`.
 - **Teclado:** <kbd>Enter</kbd> vai para o próximo campo, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> para a próxima etapa, letras escolhem opções (<kbd>S</kbd>/<kbd>N</kbd>).
@@ -76,6 +78,16 @@ Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi 
 - Busca por CNPJ, proposta ou nome.
 - **Backup** em arquivo (exportar / importar).
 - Modo **claro e escuro**.
+
+### 📑 Planilha de referência (fica só no seu computador)
+No rodapé da lista lateral, **Planilha de referência** carrega o arquivo `.xlsx` de referência de poderes que o time já usa. O bloco lê o arquivo no próprio navegador e passa a mostrar:
+
+- as **respostas prontas** de pendência e devolução;
+- o **quórum de garantias** por tipo societário;
+- os **códigos de autorização** por extenso nas Anotações;
+- o **link da Junta Comercial** do estado nos documentos de apoio.
+
+A planilha é material interno: **não fica neste repositório**, não é enviada para a internet e não entra no backup das anotações. Cada pessoa carrega a sua e, quando sair versão nova, é só carregar de novo.
 
 ---
 
@@ -110,6 +122,7 @@ npm run build:portatil   # gera dist-portatil/index.html (um arquivo só)
 |---|---|
 | <kbd>Alt</kbd>+<kbd>N</kbd> | Nova anotação |
 | <kbd>Alt</kbd>+<kbd>C</kbd> | Copiar o texto final |
+| <kbd>Alt</kbd>+<kbd>R</kbd> | Respostas prontas |
 | <kbd>Ctrl</kbd>+<kbd>K</kbd> | Buscar anotação |
 | <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd> | Desfazer / refazer |
 | <kbd>Alt</kbd>+<kbd>M</kbd> | Modo foco |

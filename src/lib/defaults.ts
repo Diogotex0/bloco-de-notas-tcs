@@ -26,6 +26,31 @@ export const ORIGENS = ['Busca Ai', 'Junta Comercial', 'Sharefiche 1', 'Sharefic
 /** Data da base de garantias usada em toda anotação nova. */
 export const DATA_BASE_GARANTIAS = '2026-10-23'
 
+/**
+ * Tipos societários. "quorum" acha a linha certa na aba de quóruns da planilha de referência
+ * (comparando com o nome sem acento e em maiúsculas); "sa" liga as regras de sociedade anônima.
+ */
+export const TIPOS_SOCIETARIOS: { nome: string; quorum: RegExp | null; sa?: boolean }[] = [
+  { nome: 'LTDA', quorum: /LTDA|LIMITADA/ },
+  { nome: 'S/A', quorum: /^S\/?A(\s|$)|ANONIMA/, sa: true },
+  { nome: 'Cooperativa', quorum: /COOPERATIVA/ },
+  { nome: 'Associação / Fundação', quorum: /ASSOCIACAO|FUNDACAO/ },
+  { nome: 'Consórcio', quorum: /CONSORCIO/ },
+  { nome: 'Banco', quorum: /BANCO/, sa: true },
+  { nome: 'Fundo de investimento', quorum: /FUNDO/ },
+  { nome: 'Condomínio', quorum: /CONDOMINIO/ },
+  { nome: 'Cartório', quorum: /CARTORIO/ },
+  { nome: 'Mitra', quorum: /MITRA/ },
+  { nome: 'Produtor rural', quorum: /PRODUTOR/ },
+  { nome: 'Outro', quorum: null },
+]
+export const tipoSocietario = (n: Pick<Note, 'tipoSocietario'>) => TIPOS_SOCIETARIOS.find((t) => t.nome === n.tipoSocietario)
+
+export const UFS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
+
+/** Prorrogação automática do mandato de diretores/administradores. */
+export const PRORROGACAO_DIAS = 120
+
 export const SUGESTOES_GRUPO = ['ADMINISTRADOR', 'DIRETOR', 'PROCURADOR', 'SÓCIO ADMINISTRADOR', 'CONSELHEIRO']
 
 export const SECTIONS: { key: SectionKey; title: string; desc: string; optional?: boolean }[] = [
@@ -39,7 +64,7 @@ export const SECTIONS: { key: SectionKey; title: string; desc: string; optional?
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9)
 
-export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false })
+export const novoGrupo = (nome = ''): Grupo => ({ id: uid(), nome, inicio: '', duracao: '', indeterminado: false, prorrogacao: false, substabeleceuDe: '' })
 export const novoRecebido = (): DocRecebido => ({
   id: uid(), tipo: '', tipoOutro: '', valMeio: 'ITI', valMeioOutro: '', validado: false, data: '', livro: '', folha: '', jucesp: false,
 })
@@ -63,6 +88,8 @@ export function novaNota(): Note {
     proposta: '',
     razaoSocial: '',
     razaoAlterada: false,
+    tipoSocietario: '',
+    uf: '',
     receita: '',
     grupos: [],
     docsRecebidos: [],
@@ -77,7 +104,7 @@ export function novaNota(): Note {
 
 export function notaVazia(n: Note) {
   return (
-    !n.cnpj && !n.proposta && !n.razaoSocial && !n.razaoAlterada && !n.receita &&
+    !n.cnpj && !n.proposta && !n.razaoSocial && !n.razaoAlterada && !n.receita && !n.tipoSocietario && !n.uf &&
     !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length &&
     n.garantidor === null &&
     n.temFiliais === null && !n.filiais.length && !n.anotacoes.trim()
@@ -124,7 +151,11 @@ export function normalizarNota(raw: unknown): Note | null {
     const v = notasRaw[s.key]
     if (typeof v === 'string' && v.trim()) n.notasEtapa[s.key] = v
   }
+  if (!TIPOS_SOCIETARIOS.some((t) => t.nome === n.tipoSocietario)) n.tipoSocietario = ''
+  if (!UFS.includes(n.uf)) n.uf = ''
   n.grupos = list(n.grupos, () => novoGrupo())
+  const idsGrupos = new Set(n.grupos.map((g) => g.id))
+  for (const g of n.grupos) if (g.substabeleceuDe === g.id || !idsGrupos.has(g.substabeleceuDe)) g.substabeleceuDe = ''
   n.docsRecebidos = list(n.docsRecebidos, novoRecebido)
   // "Busca" passou a se chamar "Busca Ai".
   n.docsApoio = list(n.docsApoio, novoApoio).map((d) => (d.origem === 'Busca' ? { ...d, origem: 'Busca Ai' } : d))

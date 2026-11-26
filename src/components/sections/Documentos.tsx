@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { Lock, Plus, ShieldCheck, Trash2 } from 'lucide-react'
 import type { DocApoio, DocRecebido, Note } from '../../lib/types'
-import { DOC_TIPOS, ORIGENS, PP, PUB, novoApoio, novoRecebido } from '../../lib/defaults'
+import { DOC_TIPOS, ORIGENS, PP, PUB, UFS, novoApoio, novoRecebido } from '../../lib/defaults'
 import { removerComDesfazer } from '../../lib/actions'
-import { useNotes } from '../../store/notes'
+import { useCurrent, useNotes } from '../../store/notes'
+import { abrirGerenciarPlanilha, linksJunta, useReferencia } from '../../store/referencia'
+import { LinkExterno } from '../LinkExterno'
 import { porId } from '../../lib/janela'
 import { Button, Callout, Checkbox, Field, IconButton, Reveal, Select, TextInput, cx, itemCard, itemMotion } from '../ui'
 import { DateInput } from '../DateInput'
@@ -20,6 +22,64 @@ function useSetDoc() {
       const d = (n[lista] as Note[K][number][]).find((x) => x.id === id)
       if (d) fn(d)
     })
+}
+
+/** Link da consulta na Junta Comercial do estado (vem da planilha de referência). */
+function LinkJunta({ ufFixa }: { ufFixa?: string }) {
+  const ref = useReferencia((s) => s.ref)
+  const n = useCurrent()
+  const editar = useNotes((s) => s.editar)
+  const uf = ufFixa ?? n?.uf ?? ''
+  if (!ref)
+    return (
+      <p className="text-[12.5px] text-fg-3">
+        <button type="button" onClick={abrirGerenciarPlanilha} className="font-medium text-primary-ink hover:underline">
+          Carregue a planilha de referência
+        </button>{' '}
+        para ver o link da Junta Comercial.
+      </p>
+    )
+  const junta = linksJunta(ref, uf)
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px]">
+      {!ufFixa && (
+        <label className="inline-flex items-center gap-1.5 text-fg-3">
+          Junta de
+          <select
+            aria-label="Estado da Junta Comercial"
+            value={uf}
+            onChange={(e) => editar((d) => void (d.uf = e.target.value))}
+            className="h-7 cursor-pointer rounded-sm border border-line-strong bg-surface px-1.5 text-[12.5px] text-fg outline-none focus:border-primary"
+          >
+            <option value="">UF</option>
+            {UFS.map((u) => (
+              <option key={u} value={u}>
+                {u}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {junta ? (
+        junta.urls.map((u, i) => (
+          <LinkExterno key={u} href={u}>
+            {i === 0 ? `Consultar na Junta Comercial (${uf})` : `Outra consulta (${i + 1})`}
+          </LinkExterno>
+        ))
+      ) : uf ? (
+        <span className="text-fg-3">A planilha não tem link da Junta de {uf}.</span>
+      ) : (
+        <span className="text-fg-3">Escolha o estado para abrir a consulta.</span>
+      )}
+    </div>
+  )
+}
+
+/** Validador do ITI: o da planilha, se houver; senão o endereço oficial. */
+function LinkITI() {
+  const ref = useReferencia((s) => s.ref)
+  const l = ref?.links.find((x) => /ITI/.test(x.nome.toUpperCase()) && !/ANTIGO/i.test(x.nome))
+  return <LinkExterno href={l?.urls[0] ?? 'https://validar.iti.gov.br/'}>Abrir o validador do ITI</LinkExterno>
 }
 
 /** Caixa obrigatória da procuração particular. Enquanto não validada, a cópia fica bloqueada. */
@@ -66,6 +126,11 @@ function ValidacaoPP({ d, lista }: { d: DocRecebido; lista: Lista }) {
           </Field>
         )}
       </div>
+      {d.valMeio === 'ITI' && !ok && (
+        <div>
+          <LinkITI />
+        </div>
+      )}
       <Checkbox
         id={`${d.id}-validado`}
         checked={d.validado}
@@ -168,7 +233,10 @@ function Recebido({ d, i }: { d: DocRecebido; i: number }) {
               label="Retirado da JUCESP"
             />
             {d.jucesp && (
-              <p className="text-[12.5px] text-fg-3">Vai no texto como “Retirado da JUCESP, em anexo”. Lembre de anexar o documento na proposta.</p>
+              <div className="grid gap-1">
+                <p className="text-[12.5px] text-fg-3">Vai no texto como “Retirado da JUCESP, em anexo”. Lembre de anexar o documento na proposta.</p>
+                <LinkJunta ufFixa="SP" />
+              </div>
             )}
           </div>
         </div>
@@ -243,6 +311,7 @@ function Apoio({ d, i }: { d: DocApoio; i: number }) {
               />
             </Field>
           )}
+          {d.origem === 'Junta Comercial' && <LinkJunta />}
           <Reveal show={d.origem === 'Junta Comercial' && !d.anexado}>
             <Callout tone="warn">Documento da Junta Comercial: anexe na proposta e marque a opção acima.</Callout>
           </Reveal>
