@@ -45,7 +45,7 @@ export function CopyButton({ bloqueado, label = 'Copiar texto', variant = 'prima
       title={bloqueado ? 'Bloqueado: confirme a validação da procuração particular' : 'Copiar texto (Alt + C)'}
       className={cx(
         tremer > 0 && 'shake',
-        estado === 'ok' && '!bg-ok !text-white !shadow-none',
+        estado === 'ok' && '!bg-ok !text-surface',
         bloqueado && estado !== 'ok' && 'text-fg-3',
       )}
     >
@@ -53,17 +53,17 @@ export function CopyButton({ bloqueado, label = 'Copiar texto', variant = 'prima
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={icone.key}
-            initial={{ scale: 0.3, opacity: 0, rotate: -45 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={{ scale: 0.3, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 600, damping: 28 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
             className="grid place-items-center"
           >
             {icone}
           </motion.span>
         </AnimatePresence>
       </span>
-      {estado === 'ok' ? 'Copiado!' : label}
+      {estado === 'ok' ? 'Copiado' : label}
     </Button>
   )
 }

@@ -3,7 +3,7 @@ import { PP, PUB } from './defaults'
 import { cnpjFormat } from './cnpj'
 import { fmtDate } from './dates'
 import { moneyFull } from './money'
-import { docLabel, vencimento } from './analyze'
+import { docLabel } from './analyze'
 import { type BlocoChave, type Modelo, rotulo } from './modelo'
 import { useModelo } from '../store/modelo'
 
@@ -98,15 +98,6 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
       lista(r('recebido'), r('recebidos'), rec)
       lista(r('apoio'), r('apoios'), apo)
       return L
-    }
-    case 'outorga': {
-      const o = n.outorga
-      if (o.indeterminada) return [`${r('rotulo')}: prazo indeterminado`]
-      if (!o.emissao) return []
-      const v = vencimento(o)
-      const q = parseInt(o.qtd, 10)
-      const un = o.unidade === 'meses' ? (q === 1 ? 'mês' : 'meses') : q === 1 ? 'ano' : 'anos'
-      return [`${r('rotulo')}: emitida em ${fmtDate(o.emissao)}${v && 'date' in v ? ` · validade de ${q} ${un} · vence em ${fmtDate(v.date)}` : ''}`]
     }
     case 'garantidor': {
       const f = fraseGarantidor(n, m)

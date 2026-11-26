@@ -103,8 +103,6 @@ export function destinosData(n: Note): DestinoData[] {
       },
     }),
   )
-  if (!n.outorga.indeterminada)
-    out.push({ rotulo: 'Emissão da outorga', sec: 'outorga', alvo: 'f-emissao', aplicar: (d, iso) => void (d.outorga.emissao = iso) })
   return out
 }
 

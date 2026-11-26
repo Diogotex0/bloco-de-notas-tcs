@@ -22,7 +22,6 @@ export function notaExemplo(): Note {
     { ...novoApoio(), tipo: 'Contrato Social', origem: 'Junta Comercial', data: '2025-08-12', anexado: true },
     { ...novoApoio(), tipo: 'Ata de Reunião ou Assembleia de Sócios', origem: 'Proposta anterior', propostaAnterior: '2025-003210', data: '2026-02-03' },
   ]
-  n.outorga = { emissao: '2026-03-15', qtd: '1', unidade: 'anos', indeterminada: false }
   n.garantidor = false
   n.dataGarantias = '2026-10-23'
 

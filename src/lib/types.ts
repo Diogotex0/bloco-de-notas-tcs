@@ -45,13 +45,6 @@ export interface Regra {
   autorizacao: string
 }
 
-export interface Outorga {
-  emissao: string
-  qtd: string
-  unidade: 'anos' | 'meses'
-  indeterminada: boolean
-}
-
 export type Situacao = 'analise' | 'aguardando' | 'finalizada'
 
 export interface Note {
@@ -75,7 +68,6 @@ export interface Note {
   grupos: Grupo[]
   docsRecebidos: DocRecebido[]
   docsApoio: DocApoio[]
-  outorga: Outorga
   garantidor: Tri
   dataGarantias: string
   temFiliais: Tri
@@ -89,7 +81,6 @@ export type SectionKey =
   | 'proposta'
   | 'grupos'
   | 'docs'
-  | 'outorga'
   | 'garantidor'
   | 'filiais'
   | 'assinaturas'

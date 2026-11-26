@@ -37,17 +37,16 @@ O Bloco de Poderes resolve isso **sem mexer em nenhum sistema interno**: é só 
 
 ## ✨ O que ele faz
 
-### Anotação guiada, em 8 etapas
+### Anotação guiada, em 7 etapas
 | # | Etapa | O que tem |
 |---|---|---|
 | 1 | **Proposta** | CNPJ com máscara e validação (inclusive o novo CNPJ alfanumérico), nº da proposta, razão social, situação na Receita, botão que copia o CNPJ e abre a consulta da Receita |
 | 2 | **Grupos e mandatos** | Grupos com nome livre, início e fim do mandato ou indeterminado, aviso de mandato vencido |
-| 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca, Junta Comercial, Sharefiche 1/2 ou outro). Junta Comercial já marca "anexado na proposta" |
-| 4 | **Validade da outorga** | Emissão + validade → calcula o vencimento e avisa se venceu |
-| 5 | **Garantidor** | Sim/Não + data da base (já vem com a última data usada) |
-| 6 | **Filiais** | Colar vários CNPJs de uma vez, marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
-| 7 | **Formas de assinatura** | Grupos isolados ou em conjunto, limite em R$ ou sem limite, autorização necessária, quóruns |
-| 8 | **Anotações** | Campo livre |
+| 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca Ai, Junta Comercial, Sharefiche 1/2, proposta anterior ou outro). Tipos incluem Ata de Eleição e Ata de Autorização. Junta Comercial já marca "anexado na proposta" |
+| 4 | **Garantidor** | Sim/Não + data da base (já vem com a data padrão da base de garantias) |
+| 5 | **Filiais** | Colar vários CNPJs de uma vez, marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
+| 6 | **Formas de assinatura** | Grupos isolados ou em conjunto, limite em R$ ou sem limite, autorização necessária, quóruns |
+| 7 | **Anotações** | Campo livre |
 
 Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi preenchido.
 
@@ -138,7 +137,7 @@ npm run build:portatil   # gera dist-portatil/index.html (um arquivo só)
 | | |
 |---|---|
 | Interface | React 19 + TypeScript |
-| Estilo | Tailwind CSS 4, com tokens de cor para tema claro e escuro |
+| Estilo | Tailwind CSS 4, com tokens de cor para tema claro e escuro; fontes do sistema (nada para baixar) |
 | Animações | Motion |
 | Estado | Zustand (+ Immer), salvo no `localStorage` com validação dos dados |
 | Ícones | Lucide |

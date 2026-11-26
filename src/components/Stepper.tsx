@@ -37,7 +37,7 @@ export function Stepper({ n, issues }: { n: Note; issues: Issue[] }) {
               )}
             >
               {atual && (
-                <motion.span layoutId="etapa-foco" className="absolute inset-0 rounded-xl bg-primary" transition={{ type: 'spring', stiffness: 480, damping: 36 }} />
+                <motion.span layoutId="etapa-foco" className="absolute inset-0 rounded-xl bg-primary" transition={{ duration: 0.16, ease: 'easeOut' }} />
               )}
               <span
                 className={cx(

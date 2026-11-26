@@ -1,7 +1,7 @@
-import type { DocRecebido, Note, Outorga, SectionKey } from './types'
+import type { DocRecebido, Note, SectionKey } from './types'
 import { PP, PUB } from './defaults'
 import { cnpjClean, cnpjValido } from './cnpj'
-import { addMonths, daysBetween, fmtDate, parseISO, today } from './dates'
+import { fmtDate, parseISO, today } from './dates'
 
 export type Level = 'block' | 'warn' | 'info'
 export interface Issue {
@@ -12,17 +12,6 @@ export interface Issue {
 }
 
 export const docLabel = (d: DocRecebido) => (d.tipo === 'Outro' ? d.tipoOutro.trim() || 'Outro documento' : d.tipo)
-
-export type Venc = { indeterminada: true } | { date: Date; days: number } | null
-
-export function vencimento(o: Outorga): Venc {
-  if (o.indeterminada) return { indeterminada: true }
-  const e = parseISO(o.emissao)
-  const q = parseInt(o.qtd, 10)
-  if (!e || !(q > 0)) return null
-  const date = addMonths(e, o.unidade === 'meses' ? q : q * 12)
-  return { date, days: daysBetween(today(), date) }
-}
 
 const plural = (n: number, s: string, p: string) => (n === 1 ? s : p)
 
@@ -86,19 +75,11 @@ export function analisar(n: Note): Issue[] {
       add('warn', 'docs', `${nome}: anexe na proposta (Junta Comercial)`, `${d.id}-anexado`)
   })
 
-  // 4. Outorga (opcional)
-  const o = n.outorga
-  if (!o.indeterminada && o.emissao) {
-    const v = vencimento(o)
-    if (!v) add('warn', 'outorga', 'Informe a validade da outorga', 'f-qtd')
-    else if ('days' in v && v.days < 0) add('warn', 'outorga', `Outorga vencida em ${fmtDate(v.date)}`, 'f-emissao')
-  }
-
-  // 5. Garantidor
+  // 4. Garantidor
   if (n.garantidor === null) add('warn', 'garantidor', 'Informe se o cliente é garantidor', 'f-garantidor')
   if (!parseISO(n.dataGarantias)) add('warn', 'garantidor', 'Informe a data da base de garantias', 'f-dataGarantias')
 
-  // 6. Filiais
+  // 5. Filiais
   if (n.temFiliais === null) add('warn', 'filiais', 'Informe se a empresa tem filiais', 'f-temFiliais')
   else if (n.temFiliais) {
     if (!n.filiais.length) add('warn', 'filiais', 'Adicione os CNPJs das filiais', 'f-filiaisInput')
@@ -110,7 +91,7 @@ export function analisar(n: Note): Issue[] {
       add('warn', 'filiais', `${inv.length} ${plural(inv.length, 'CNPJ de filial inválido', 'CNPJs de filial inválidos')}`, `fil-${inv[0].id}`)
   }
 
-  // 7. Formas de assinatura (opcional)
+  // 6. Formas de assinatura (opcional)
   n.regras.forEach((r, i) => {
     const lbl = `Forma de assinatura ${i + 1}`
     if (!r.grupos.some((id) => n.grupos.some((g) => g.id === id)))
@@ -124,7 +105,6 @@ export function analisar(n: Note): Issue[] {
 }
 
 export function temConteudo(n: Note, key: SectionKey) {
-  if (key === 'outorga') return !!n.outorga.emissao || n.outorga.indeterminada
   if (key === 'assinaturas') return n.regras.length > 0 || !!n.quoruns.trim()
   if (key === 'anotacoes') return !!n.anotacoes.trim()
   return true

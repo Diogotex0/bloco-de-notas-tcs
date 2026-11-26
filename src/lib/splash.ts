@@ -8,11 +8,11 @@ import { toast } from '../store/toast'
  * Para lançar uma versão nova: edite src/novidades.json (versao + itens).
  */
 const CHAVE = 'bloco-poderes:versao'
-const MINIMO_MS = 900 // tempo mínimo na tela, para a animação não "piscar"
+const MINIMO_MS = 0
 
 function esconder(el: HTMLElement) {
   el.classList.add('saindo')
-  window.setTimeout(() => el.remove(), 650)
+  window.setTimeout(() => el.remove(), 250)
 }
 
 function mostrarNovidades(el: HTMLElement) {
@@ -22,13 +22,12 @@ function mostrarNovidades(el: HTMLElement) {
   const botao = document.getElementById('sp-comecar') as HTMLButtonElement | null
   if (!lista || !botao) return esconder(el)
 
-  if (titulo) titulo.textContent = 'Site atualizado!'
-  if (selo) selo.textContent = `✓ Versão de ${fmtDate(novidades.data)}`
+  if (titulo) titulo.textContent = 'Site atualizado'
+  if (selo) selo.textContent = `Versão de ${fmtDate(novidades.data)}`
   lista.replaceChildren(
-    ...novidades.itens.map((t, i) => {
+    ...novidades.itens.map((t) => {
       const li = document.createElement('li')
       li.textContent = t
-      li.style.animationDelay = `${0.15 + i * 0.08}s`
       return li
     }),
   )

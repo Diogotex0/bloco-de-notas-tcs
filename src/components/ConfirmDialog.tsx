@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Trash2 } from 'lucide-react'
 import { useConfirm } from '../store/confirm'
 import { janela } from '../lib/janela'
 import { Button } from './ui'
@@ -25,7 +24,7 @@ export function ConfirmDialog() {
     <AnimatePresence>
       {pedido && (
         <motion.div
-          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -35,16 +34,13 @@ export function ConfirmDialog() {
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="confirm-titulo"
-            initial={{ opacity: 0, scale: 0.94, y: 8 }}
+            initial={{ opacity: 0, scale: 0.98, y: 4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm rounded-2xl border border-line bg-surface p-5 shadow-pop"
           >
-            <div className="mb-4 grid size-11 place-items-center rounded-xl bg-bad-soft text-bad">
-              <Trash2 className="size-5" />
-            </div>
             <h2 id="confirm-titulo" className="text-[16px] font-semibold">
               {pedido.titulo}
             </h2>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, Reorder, useDragControls } from 'motion/react'
-import { ArrowDown, ArrowUp, ChevronDown, Download, FileText, GripVertical, RotateCcw, Space, Upload, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronDown, Download, GripVertical, RotateCcw, Space, Upload, X } from 'lucide-react'
 import { CATALOGO, type Bloco, type Modelo, modeloPadrao, normalizarModelo } from '../lib/modelo'
 import { gerarTexto } from '../lib/generate'
 import { notaExemplo } from '../lib/example'
@@ -81,7 +81,7 @@ export function ModeloEditor() {
     <AnimatePresence>
       {aberto && (
         <motion.div
-          className="fixed inset-0 z-[66] grid place-items-center bg-black/40 p-3 backdrop-blur-[2px] sm:p-6"
+          className="fixed inset-0 z-[66] grid place-items-center bg-black/40 p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -94,14 +94,11 @@ export function ModeloEditor() {
             initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
             className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-pop"
           >
             <div className="flex items-center gap-3 border-b border-line px-5 py-4">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary-ink">
-                <FileText className="size-5" />
-              </span>
               <div className="min-w-0 flex-1">
                 <h2 id="modelo-titulo" className="text-[16px] font-semibold">
                   Modelo do texto
@@ -134,7 +131,7 @@ export function ModeloEditor() {
 
               {/* Prévia */}
               <div className="flex min-h-0 flex-col p-4">
-                <h3 className="mb-1 text-[12px] font-semibold tracking-wide text-fg-3 uppercase">Prévia</h3>
+                <h3 className="mb-1 text-[12px] font-semibold text-fg-2">Prévia</h3>
                 <p className="mb-2.5 text-[12px] text-fg-3">
                   {nota === exemplo.current ? 'Usando o exemplo fictício' : `Usando a anotação aberta: ${nota.razaoSocial.trim() || 'sem razão social'}`}
                 </p>

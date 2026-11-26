@@ -10,6 +10,8 @@ export const DOC_TIPOS = [
   'Ata de Reunião ou Assembleia de Sócios',
   'Ata de Assembleia Geral Ordinária',
   'Ata de Reunião do Conselho de Administração',
+  'Ata de Eleição',
+  'Ata de Autorização',
   PUB,
   PP,
   'Substabelecimento',
@@ -18,7 +20,7 @@ export const DOC_TIPOS = [
   'Regimento Interno',
 ]
 
-export const ORIGENS = ['Busca', 'Junta Comercial', 'Sharefiche 1', 'Sharefiche 2', 'Proposta anterior']
+export const ORIGENS = ['Busca Ai', 'Junta Comercial', 'Sharefiche 1', 'Sharefiche 2', 'Proposta anterior']
 
 /** Data da base de garantias usada em toda anotação nova. */
 export const DATA_BASE_GARANTIAS = '2026-10-23'
@@ -29,7 +31,6 @@ export const SECTIONS: { key: SectionKey; title: string; desc: string; optional?
   { key: 'proposta', title: 'Proposta', desc: 'CNPJ, número e razão social' },
   { key: 'grupos', title: 'Grupos e mandatos', desc: 'Quem consta no documento e até quando' },
   { key: 'docs', title: 'Documentos', desc: 'Recebidos na proposta e de apoio' },
-  { key: 'outorga', title: 'Validade da outorga', desc: 'Emissão, prazo e vencimento', optional: true },
   { key: 'garantidor', title: 'Garantidor', desc: 'Consulta à base de garantias' },
   { key: 'filiais', title: 'Filiais', desc: 'CNPJs e réplica' },
   { key: 'assinaturas', title: 'Formas de assinatura', desc: 'Grupos, limites e autorizações', optional: true },
@@ -69,7 +70,6 @@ export function novaNota(): Note {
     grupos: [],
     docsRecebidos: [],
     docsApoio: [],
-    outorga: { emissao: '', qtd: '1', unidade: 'anos', indeterminada: false },
     garantidor: null,
     dataGarantias: '',
     temFiliais: null,
@@ -84,7 +84,7 @@ export function notaVazia(n: Note) {
   return (
     !n.cnpj && !n.proposta && !n.razaoSocial && !n.razaoAlterada && !n.receita &&
     !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length &&
-    !n.outorga.emissao && !n.outorga.indeterminada && n.garantidor === null &&
+    n.garantidor === null &&
     n.temFiliais === null && !n.filiais.length && !n.regras.length && !n.quoruns.trim() && !n.anotacoes.trim()
   )
 }
@@ -129,10 +129,10 @@ export function normalizarNota(raw: unknown): Note | null {
     const v = notasRaw[s.key]
     if (typeof v === 'string' && v.trim()) n.notasEtapa[s.key] = v
   }
-  if (!['anos', 'meses'].includes(n.outorga.unidade)) n.outorga.unidade = 'anos'
   n.grupos = list(n.grupos, () => novoGrupo())
   n.docsRecebidos = list(n.docsRecebidos, novoRecebido)
-  n.docsApoio = list(n.docsApoio, novoApoio)
+  // "Busca" passou a se chamar "Busca Ai".
+  n.docsApoio = list(n.docsApoio, novoApoio).map((d) => (d.origem === 'Busca' ? { ...d, origem: 'Busca Ai' } : d))
   n.filiais = list(n.filiais, () => novaFilial('')).map((f) => ({ ...f, cnpj: cnpjClean(f.cnpj) })).filter((f) => f.cnpj)
   n.regras = list(n.regras, novaRegra).map((r) => ({
     ...r,

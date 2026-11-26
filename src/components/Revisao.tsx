@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { CircleAlert, CircleCheck, CircleDashed, ClipboardCheck, Lock, PenLine, StickyNote, X } from 'lucide-react'
+import { CircleAlert, CircleCheck, CircleDashed, Lock, PenLine, StickyNote, X } from 'lucide-react'
 import { analisar } from '../lib/analyze'
 import { anexosPendentes } from '../lib/anexos'
 import { gerarTexto } from '../lib/generate'
@@ -66,7 +66,7 @@ export function RevisaoDialog() {
     <AnimatePresence>
       {aberta && (
         <motion.div
-          className="fixed inset-0 z-[65] grid place-items-center bg-black/40 p-3 backdrop-blur-[2px] sm:p-6"
+          className="fixed inset-0 z-[65] grid place-items-center bg-black/40 p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -79,15 +79,12 @@ export function RevisaoDialog() {
             initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
             className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-pop"
           >
             {/* Cabeçalho */}
             <div className="flex items-center gap-3 border-b border-line px-5 py-4">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary-ink">
-                <ClipboardCheck className="size-5" />
-              </span>
               <div className="min-w-0 flex-1">
                 <h2 id="revisao-titulo" className="truncate text-[16px] font-semibold">
                   Revisão · {n.razaoSocial.trim() || 'Sem razão social'}
@@ -104,7 +101,7 @@ export function RevisaoDialog() {
             {/* Corpo: preenchido × texto final */}
             <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-2 lg:overflow-hidden">
               <div className="min-h-0 border-line p-5 lg:overflow-y-auto lg:border-r">
-                <h3 className="mb-3 text-[12px] font-semibold tracking-wide text-fg-3 uppercase">O que foi preenchido</h3>
+                <h3 className="mb-3 text-[12px] font-semibold text-fg-2">O que foi preenchido</h3>
                 <div className="grid gap-3">
                   {etapas.map((e, idx) => {
                     const iss = issues.filter((i) => i.sec === e.key && i.level !== 'info')
@@ -172,7 +169,7 @@ export function RevisaoDialog() {
               </div>
 
               <div className="flex min-h-0 flex-col p-5">
-                <h3 className="mb-3 text-[12px] font-semibold tracking-wide text-fg-3 uppercase">Texto que vai para o Salesforce</h3>
+                <h3 className="mb-3 text-[12px] font-semibold text-fg-2">Texto que vai para o Salesforce</h3>
                 <pre className="min-h-[200px] flex-1 overflow-auto rounded-xl bg-surface-2 p-4 font-mono text-[12.5px] leading-[1.7] break-words whitespace-pre-wrap text-fg">
                   {gerarTexto(n, modelo)}
                 </pre>

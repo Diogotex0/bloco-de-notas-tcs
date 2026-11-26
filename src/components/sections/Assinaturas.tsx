@@ -20,7 +20,7 @@ function CartaoRegra({ n, r, i }: { n: Note; r: Regra; i: number }) {
   return (
     <motion.div {...itemMotion} className={cx(itemCard, 'grid gap-3.5')}>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[12.5px] font-semibold tracking-wide text-fg-3 uppercase">Forma {i + 1}</span>
+        <span className="text-[12.5px] font-semibold text-fg-2">Forma {i + 1}</span>
         <IconButton
           label="Remover forma de assinatura"
           tone="danger"

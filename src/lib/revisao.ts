@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Note, SectionKey } from './types'
 import { SECTIONS } from './defaults'
-import { docLabel, vencimento } from './analyze'
+import { docLabel } from './analyze'
 import { fmtDate } from './dates'
 import { livroFolha, mandatoTexto, origemLabel, regraTexto } from './generate'
 import { cnpjFormat } from './cnpj'
@@ -42,15 +42,6 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
         valor: [d.tipo ? docLabel(d) : '', ...livroFolha(d), fmtDate(d.data), d.origem ? origemLabel(d) : ''].filter(Boolean).join(' · '),
       })),
     ],
-    outorga: (() => {
-      const v = vencimento(n.outorga)
-      if (!v) return [{ rotulo: 'Outorga', valor: '', opcional: true }]
-      if ('indeterminada' in v) return [{ rotulo: 'Outorga', valor: 'Prazo indeterminado' }]
-      return [
-        { rotulo: 'Emissão', valor: fmtDate(n.outorga.emissao) },
-        { rotulo: 'Vencimento', valor: `${fmtDate(v.date)}${v.days < 0 ? ' (vencida)' : ''}` },
-      ]
-    })(),
     garantidor: [
       { rotulo: 'É garantidor?', valor: n.garantidor === null ? '' : n.garantidor ? 'Sim' : 'Não' },
       { rotulo: 'Base de garantias', valor: fmtDate(n.dataGarantias) },

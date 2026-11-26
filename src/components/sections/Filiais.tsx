@@ -129,7 +129,7 @@ export function Filiais({ n }: { n: Note }) {
             animate={{ height: 'auto', opacity: 1, transitionEnd: { overflow: 'visible' } }}
             exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
             style={{ overflow: 'hidden' }}
-            transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
           >
             <div className="grid gap-4 pt-1">
               {/* Entrada em lote */}
@@ -150,7 +150,7 @@ export function Filiais({ n }: { n: Note }) {
                         }
                       }}
                     />
-                    <Button variant="primary" onClick={adicionar} className="sm:h-[64px] sm:px-5">
+                    <Button variant="outline" onClick={adicionar}>
                       <Plus /> Adicionar
                     </Button>
                   </div>
@@ -162,7 +162,7 @@ export function Filiais({ n }: { n: Note }) {
               ) : (
                 <>
                   {/* Barra de ações em lote */}
-                  <div className="sticky top-[68px] z-10 -mx-1 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface/90 px-3 py-1.5 shadow-card backdrop-blur-md">
+                  <div className="sticky top-[60px] z-10 -mx-1 flex flex-wrap items-center gap-2 rounded-md border border-line bg-surface px-3 py-1.5">
                     <Checkbox
                       checked={todas}
                       indeterminate={selecionadas.length > 0 && !todas}
@@ -208,7 +208,7 @@ export function Filiais({ n }: { n: Note }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="mt-2 flex items-center gap-2 px-1 text-[11.5px] font-semibold tracking-wide text-fg-3 uppercase first:mt-0"
+                            className="mt-3 flex items-center gap-2 px-1 text-[12.5px] font-semibold text-fg-2 first:mt-0"
                           >
                             <span className={cx('size-1.5 rounded-full', g.dot)} />
                             {g.titulo}
@@ -255,17 +255,17 @@ function LinhaFilial({
     <motion.div
       id={`fil-${f.id}`}
       layout
-      initial={{ opacity: 0, y: -6 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.15 } }}
-      transition={{ type: 'spring', stiffness: 460, damping: 38 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      transition={{ duration: 0.16, ease: 'easeOut' }}
       data-flash
       className={cx(
-        'relative flex flex-wrap items-center gap-x-3 gap-y-1 overflow-hidden rounded-xl border py-1 pr-1.5 pl-4 transition-colors duration-200',
+        'relative flex flex-wrap items-center gap-x-3 gap-y-1 overflow-hidden rounded-md border py-1 pr-1.5 pl-4 transition-colors duration-100',
         selecionada ? 'border-primary/45 bg-primary-soft' : 'border-line bg-surface hover:bg-surface-2',
       )}
     >
-      <span className={cx('absolute inset-y-0 left-0 w-[3px] transition-colors duration-300', barra)} />
+      <span className={cx('absolute inset-y-0 left-0 w-0.5', barra)} />
       <Checkbox checked={selecionada} onChange={onSelect} ariaLabel={`Selecionar ${cnpjFormat(f.cnpj)}`} />
       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
         <span className="font-mono text-[13.5px] tracking-tight text-fg tabular-nums">{cnpjFormat(f.cnpj)}</span>

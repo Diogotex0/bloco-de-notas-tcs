@@ -69,7 +69,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className={cx('min-h-dvh', !foco && 'lg:grid lg:grid-cols-[290px_minmax(0,1fr)]')}>
+      <div className={cx('min-h-dvh', !foco && 'lg:grid lg:grid-cols-[272px_minmax(0,1fr)]')}>
         {!foco && <Sidebar />}
         <main className="min-w-0">
           <Topbar n={pip ? null : n} bloqueado={bloqueado} />

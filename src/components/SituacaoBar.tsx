@@ -20,7 +20,7 @@ export function SituacaoBar({ n }: { n: Note }) {
   if (n.excluidaEm) {
     const dias = diasRestantesLixeira(n)
     return (
-      <div className="flex flex-col gap-3 rounded-2xl border border-bad-line bg-bad-soft p-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-md border border-line border-l-2 border-l-bad bg-surface p-4 sm:flex-row sm:items-center">
         <Trash2 className="size-5 shrink-0 text-bad" />
         <div className="min-w-0 flex-1 text-[13.5px]">
           <p className="font-semibold text-fg">Esta anotação está na lixeira</p>
@@ -66,8 +66,8 @@ export function SituacaoBar({ n }: { n: Note }) {
         }}
         options={[
           { value: 'analise' as const, label: NOMES.analise },
-          { value: 'aguardando' as const, label: NOMES.aguardando, tone: 'warn' },
-          { value: 'finalizada' as const, label: NOMES.finalizada, tone: 'ok' },
+          { value: 'aguardando' as const, label: NOMES.aguardando },
+          { value: 'finalizada' as const, label: NOMES.finalizada },
         ]}
       />
     </div>

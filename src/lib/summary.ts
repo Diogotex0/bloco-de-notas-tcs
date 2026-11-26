@@ -1,5 +1,5 @@
 import type { Note, SectionKey } from './types'
-import { docLabel, vencimento } from './analyze'
+import { docLabel } from './analyze'
 import { fmtDate } from './dates'
 
 const pl = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`
@@ -16,12 +16,6 @@ export function resumoEtapa(n: Note, k: SectionKey): string {
       if (n.docsRecebidos.length) p.push(n.docsRecebidos.map((d) => (d.tipo ? docLabel(d) : 'Sem tipo')).join(', '))
       if (n.docsApoio.length) p.push(pl(n.docsApoio.length, 'de apoio', 'de apoio'))
       return p.join(' · ')
-    }
-    case 'outorga': {
-      const v = vencimento(n.outorga)
-      if (!v) return ''
-      if ('indeterminada' in v) return 'Prazo indeterminado'
-      return v.days < 0 ? `Vencida em ${fmtDate(v.date)}` : `Vence em ${fmtDate(v.date)}`
     }
     case 'garantidor':
       if (n.garantidor === null) return ''

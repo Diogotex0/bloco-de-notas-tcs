@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Archive, BellOff, BellRing, Download, Settings2, Moon, NotebookPen, Plus, Search, Sparkles, Sun, Upload, X } from 'lucide-react'
+import { Archive, BellOff, BellRing, Download, FileText, Settings2, Moon, Plus, Search, Sun, Upload, X } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { analisar, statusDe, type NoteStatus } from '../lib/analyze'
 import { notaVazia } from '../lib/defaults'
@@ -97,7 +97,7 @@ export function Sidebar() {
       <AnimatePresence>
         {navOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-black/35 backdrop-blur-[2px] lg:hidden"
+            className="fixed inset-0 z-40 bg-black/35 lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -108,18 +108,15 @@ export function Sidebar() {
 
       <aside
         className={cx(
-          'fixed inset-y-0 left-0 z-50 flex w-[290px] flex-col gap-4 border-r border-line bg-surface px-3.5 pt-4 pb-3 transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] lg:sticky lg:top-0 lg:z-0 lg:h-dvh lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 flex w-[272px] flex-col gap-3.5 border-r border-line bg-surface px-3.5 pt-4 pb-3 transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:z-0 lg:h-dvh lg:translate-x-0',
           navOpen ? 'translate-x-0 shadow-pop' : '-translate-x-full',
         )}
       >
         {/* Marca */}
         <div className="flex items-center gap-3 px-1.5">
-          <div className="grid size-9 place-items-center rounded-[11px] bg-gradient-to-br from-[#6b75ff] to-[#4350f0] text-white shadow-[0_4px_12px_-2px_rgb(79_91_255/0.5)]">
-            <NotebookPen className="size-[18px]" />
-          </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[14.5px] leading-tight font-semibold tracking-[-0.01em]">Bloco de Poderes</p>
-            <p className="text-[12px] text-fg-3">Anotações da análise</p>
+            <p className="text-[15px] leading-tight font-semibold">Bloco de Poderes</p>
+            <p className="text-[12px] text-fg-3">Análise de poderes PJ</p>
           </div>
           <button className="grid size-8 place-items-center rounded-lg text-fg-3 hover:bg-surface-3 lg:hidden" onClick={() => setNav(false)} aria-label="Fechar menu">
             <X className="size-4" />
@@ -136,14 +133,11 @@ export function Sidebar() {
           }}
         >
           <Plus /> Nova anotação
-          <span className="ml-auto hidden items-center gap-0.5 opacity-80 sm:flex">
-            <kbd className="rounded bg-white/15 px-1 font-mono text-[10.5px]">Alt</kbd>
-            <kbd className="rounded bg-white/15 px-1 font-mono text-[10.5px]">N</kbd>
-          </span>
+          <span className="ml-auto hidden font-mono text-[11px] opacity-70 sm:inline">Alt+N</span>
         </Button>
 
         {/* Busca */}
-        <label className="group flex h-10 items-center gap-2 rounded-[10px] border border-line bg-surface-2 px-3 transition-[border-color,box-shadow] focus-within:border-primary focus-within:ring-4 focus-within:ring-(--ring)">
+        <label className="group flex h-9 items-center gap-2 rounded-md border border-line-strong bg-surface px-2.5 transition-[border-color,box-shadow] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
           <Search className="size-4 shrink-0 text-fg-3" />
           <input
             id="busca"
@@ -170,7 +164,7 @@ export function Sidebar() {
         </label>
 
         {/* Filtro: em aberto, finalizadas e lixeira */}
-        <div className="grid grid-cols-3 gap-1 rounded-[11px] bg-surface-2 p-1" role="tablist">
+        <div className="-mx-3.5 flex gap-4 border-b border-line px-5" role="tablist">
           {ABAS.map((a) => (
             <button
               key={a.k}
@@ -178,13 +172,10 @@ export function Sidebar() {
               aria-selected={filtro === a.k}
               onClick={() => setFiltro(a.k)}
               className={cx(
-                'relative flex h-8 items-center justify-center gap-1.5 rounded-[8px] text-[12px] font-medium transition-colors [&_svg]:size-3.5',
-                filtro === a.k ? 'text-fg' : 'text-fg-3 hover:text-fg-2',
+                '-mb-px flex h-9 items-center gap-1.5 border-b-2 text-[12.5px] font-medium transition-colors',
+                filtro === a.k ? 'border-fg text-fg' : 'border-transparent text-fg-3 hover:text-fg-2',
               )}
             >
-              {filtro === a.k && (
-                <motion.span layoutId="filtro-lista" className="absolute inset-0 -z-0 rounded-[8px] bg-surface shadow-card ring-1 ring-line dark:bg-surface-3" transition={{ type: 'spring', stiffness: 500, damping: 38 }} />
-              )}
               <span className="relative flex items-center gap-1">
                 {a.label}
                 {contagem[a.k] > 0 && <span className="text-[11px] text-fg-3 tabular-nums">{contagem[a.k]}</span>}
@@ -220,7 +211,7 @@ export function Sidebar() {
         {/* Rodapé */}
         <div className="grid gap-1 border-t border-line pt-3">
           <RodapeBtn
-            icon={<Sparkles />}
+            icon={<FileText />}
             onClick={() => {
               exemplo()
               setNav(false)
@@ -271,7 +262,7 @@ function RodapeBtn({ icon, children, onClick }: { icon: React.ReactNode; childre
     <button
       type="button"
       onClick={onClick}
-      className="flex h-9 items-center gap-2.5 rounded-[9px] px-2.5 text-[13px] text-fg-2 transition-colors hover:bg-surface-3 hover:text-fg active:scale-[0.98] [&_svg]:size-4 [&_svg]:text-fg-3"
+      className="flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] text-fg-2 transition-colors hover:bg-surface-3 hover:text-fg [&_svg]:size-4 [&_svg]:text-fg-3"
     >
       {icon}
       {children}
@@ -284,21 +275,21 @@ function ItemNota({ n, ativo, onClick }: { n: Note; ativo: boolean; onClick: () 
   return (
     <motion.button
       layout="position"
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -8, transition: { duration: 0.15 } }}
-      transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      transition={{ duration: 0.14 }}
       onClick={onClick}
       aria-current={ativo ? 'true' : undefined}
       className={cx(
-        'relative grid w-full grid-cols-[8px_minmax(0,1fr)_auto] items-center gap-x-3 rounded-[10px] px-3 py-2.5 text-left transition-colors duration-150',
-        ativo ? 'bg-primary-soft' : 'hover:bg-surface-2',
+        'relative grid w-full grid-cols-[6px_minmax(0,1fr)_auto] items-center gap-x-3 rounded-sm px-3 py-2 text-left transition-colors duration-100',
+        ativo ? 'bg-surface-3' : 'hover:bg-surface-2',
       )}
     >
-      {ativo && <motion.span layoutId="nota-ativa" className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-primary" />}
-      <span className={cx('size-2 rounded-full', dot[status])} title={dotLabel[status]} />
+      {ativo && <span className="absolute inset-y-0 left-0 w-0.5 bg-primary" />}
+      <span className={cx('size-1.5 rounded-full', dot[status])} title={dotLabel[status]} />
       <span className="min-w-0">
-        <span className={cx('block truncate text-[13.5px] font-medium', ativo ? 'text-primary-ink' : 'text-fg')}>
+        <span className="block truncate text-[13.5px] font-medium text-fg">
           {n.razaoSocial.trim() || 'Sem razão social'}
         </span>
         <span className="block truncate text-[12px] text-fg-3 tabular-nums">
@@ -310,7 +301,7 @@ function ItemNota({ n, ativo, onClick }: { n: Note; ativo: boolean; onClick: () 
           {n.excluidaEm ? `apaga em ${diasRestantesLixeira(n)}d` : relTime(n.updatedAt)}
         </span>
         {!n.excluidaEm && n.situacao === 'aguardando' && (
-          <span className="rounded-full bg-warn-soft px-1.5 text-[10.5px] font-semibold whitespace-nowrap text-warn">Em aguardo</span>
+          <span className="text-[11px] font-medium whitespace-nowrap text-warn">Em aguardo</span>
         )}
       </span>
     </motion.button>

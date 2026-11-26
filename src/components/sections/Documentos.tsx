@@ -29,28 +29,17 @@ function ValidacaoPP({ d, lista }: { d: DocRecebido; lista: Lista }) {
   return (
     <motion.div
       layout
-      className={cx(
-        'mt-3 grid gap-3 rounded-xl border p-3.5 transition-colors duration-300',
-        ok ? 'border-ok-line bg-ok-soft' : 'border-bad-line bg-bad-soft',
-      )}
+      className={cx('mt-3 grid gap-3 border-l-2 py-1 pl-3.5', ok ? 'border-ok' : 'border-bad')}
       data-flash
     >
-      <div className="flex items-start gap-3">
-        <span className={cx('grid size-8 shrink-0 place-items-center rounded-lg transition-colors', ok ? 'bg-ok/15 text-ok' : 'bg-bad/12 text-bad')}>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={String(ok)} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.18 }}>
-              {ok ? <ShieldCheck className="size-[17px]" /> : <Lock className="size-[17px]" />}
-            </motion.span>
-          </AnimatePresence>
-        </span>
+      <div className="flex items-start gap-2">
+        {ok ? <ShieldCheck className="mt-0.5 size-4 shrink-0 text-ok" /> : <Lock className="mt-0.5 size-4 shrink-0 text-bad" />}
         <div className="min-w-0">
-          <p className="text-[13.5px] font-semibold text-fg">
+          <p className={cx('text-[13.5px] font-semibold', ok ? 'text-fg' : 'text-bad')}>
             {ok ? 'Procuração particular validada' : 'Validação da procuração particular obrigatória'}
           </p>
           <p className="text-[12.5px] text-fg-2">
-            {ok
-              ? 'Validação registrada e evidência anexada.'
-              : 'Sem isso, o texto não pode ser copiado.'}
+            {ok ? 'Validação registrada e evidência anexada.' : 'Sem isso, o texto não pode ser copiado.'}
           </p>
         </div>
       </div>

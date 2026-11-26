@@ -102,7 +102,7 @@ export function Grupos({ n }: { n: Note }) {
               key={s}
               type="button"
               onClick={() => adicionar(s)}
-              className="h-8 rounded-full border border-line-strong bg-surface px-3 text-[12px] font-medium text-fg-2 transition-colors hover:border-primary/40 hover:bg-primary-soft hover:text-primary-ink active:scale-95"
+              className="h-8 rounded-full border border-line-strong bg-surface px-3 text-[12px] font-medium text-fg-2 transition-colors hover:border-primary/40 hover:bg-primary-soft hover:text-primary-ink"
             >
               + {s}
             </button>

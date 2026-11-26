@@ -9,7 +9,7 @@ import { useNotes } from '../store/notes'
 import { Proposta } from './sections/Proposta'
 import { Grupos } from './sections/Grupos'
 import { Documentos } from './sections/Documentos'
-import { Anotacoes, Garantidor, Outorga } from './sections/Simples'
+import { Anotacoes, Garantidor } from './sections/Simples'
 import { Filiais } from './sections/Filiais'
 import { Assinaturas } from './sections/Assinaturas'
 
@@ -17,17 +17,16 @@ const CONTEUDO: Record<SectionKey, (p: { n: Note }) => ReactNode> = {
   proposta: Proposta,
   grupos: Grupos,
   docs: Documentos,
-  outorga: Outorga,
   garantidor: Garantidor,
   filiais: Filiais,
   assinaturas: Assinaturas,
   anotacoes: Anotacoes,
 }
 
-/** As 8 etapas da anotação. Usado na aba e na janela flutuante. */
+/** As etapas da anotação. Usado na aba e na janela flutuante. */
 export function Etapas({ n, issues, somente }: { n: Note; issues: Issue[]; somente?: SectionKey }) {
   return (
-    <>
+    <div className="rounded-md border border-line bg-surface">
       {SECTIONS.map((s, i) => {
         if (somente && s.key !== somente) return null
         const Conteudo = CONTEUDO[s.key]
@@ -55,6 +54,6 @@ export function Etapas({ n, issues, somente }: { n: Note; issues: Issue[]; somen
           </Section>
         )
       })}
-    </>
+    </div>
   )
 }

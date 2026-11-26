@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { motion } from 'motion/react'
-import { ChevronDown, ClipboardPaste, NotebookPen, PanelTopClose, Plus } from 'lucide-react'
+import { ChevronDown, ClipboardPaste, PanelTopClose, Plus } from 'lucide-react'
 import { analisar } from '../lib/analyze'
 import { focarQuandoExistir } from '../lib/actions'
 import { fecharJanelaFlutuante } from '../lib/pip'
@@ -32,7 +32,7 @@ export function MiniApp() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-fg">
-      <header className="sticky top-0 z-30 border-b border-line bg-bg/90 px-3 pt-2.5 pb-2 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-line bg-surface px-3 pt-2.5 pb-2">
         <div className="flex items-center gap-1.5">
           {/* Trocar de anotação sem sair da janelinha */}
           <div className="relative min-w-0 flex-1">
@@ -40,7 +40,7 @@ export function MiniApp() {
               aria-label="Anotação aberta"
               value={n && !n.excluidaEm ? n.id : ''}
               onChange={(e) => useNotes.getState().abrir(e.target.value)}
-              className="h-9 w-full cursor-pointer appearance-none truncate rounded-[10px] border border-line bg-surface pr-8 pl-3 text-[13.5px] font-semibold text-fg outline-none focus:border-primary"
+              className="h-9 w-full cursor-pointer appearance-none truncate rounded-md border border-line bg-surface pr-8 pl-3 text-[13.5px] font-semibold text-fg outline-none focus:border-primary"
             >
               {!n || n.excluidaEm ? <option value="">Escolha uma anotação</option> : null}
               {abertas.map((x) => (
@@ -103,9 +103,6 @@ export function MiniApp() {
           </>
         ) : (
           <div className="flex flex-col items-center px-4 py-16 text-center">
-            <div className="mb-4 grid size-12 place-items-center rounded-xl bg-primary-soft text-primary-ink">
-              <NotebookPen className="size-6" />
-            </div>
             <p className="text-[14px] font-semibold">Nenhuma anotação aberta</p>
             <p className="mt-1 text-[13px] text-fg-2">Crie uma nova ou escolha uma na lista acima.</p>
             <Button variant="primary" className="mt-4" onClick={nova}>

@@ -10,7 +10,6 @@ export type BlocoChave =
   | 'receita'
   | 'grupos'
   | 'documentos'
-  | 'outorga'
   | 'garantidor'
   | 'razaoAlterada'
   | 'filiais'
@@ -53,7 +52,6 @@ export const CATALOGO: Record<BlocoChave, { nome: string; dica?: string; rotulos
       { id: 'apoios', nome: 'Vários de apoio', padrao: 'Documentos de apoio' },
     ],
   },
-  outorga: { nome: 'Validade da outorga', dica: 'Só aparece se preenchido', rotulos: [{ id: 'rotulo', nome: 'Rótulo', padrao: 'Outorga' }] },
   garantidor: {
     nome: 'Frase do garantidor',
     dica: 'Use {é/não é} e {data} onde devem entrar os valores',
@@ -88,7 +86,6 @@ const ORDEM_PADRAO: [BlocoChave, boolean][] = [
   ['receita', false],
   ['grupos', true],
   ['documentos', true],
-  ['outorga', false],
   ['garantidor', true],
   ['razaoAlterada', false],
   ['filiais', false],

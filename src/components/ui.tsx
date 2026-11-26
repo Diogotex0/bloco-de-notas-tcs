@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, type ComponentProps, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ComponentProps, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ChevronDown, Info, TriangleAlert, CircleCheck, OctagonAlert } from 'lucide-react'
 import clsx from 'clsx'
@@ -8,13 +8,13 @@ export const cx = clsx
 /* ---------- Botões ---------- */
 type BtnVariant = 'primary' | 'soft' | 'ghost' | 'outline' | 'danger' | 'ok' | 'bad'
 const btnVariants: Record<BtnVariant, string> = {
-  primary: 'bg-primary text-on-primary hover:bg-primary-hover shadow-[0_1px_2px_rgb(79_91_255/0.35),inset_0_1px_0_rgb(255_255_255/0.12)]',
-  soft: 'bg-primary-soft text-primary-ink hover:bg-primary-soft-hover',
+  primary: 'bg-primary text-on-primary hover:bg-primary-hover',
+  soft: 'border border-line-strong bg-surface text-fg hover:bg-surface-3',
   ghost: 'text-fg-2 hover:bg-surface-3 hover:text-fg',
   outline: 'border border-line-strong bg-surface text-fg hover:bg-surface-2',
   danger: 'text-bad hover:bg-bad-soft',
-  ok: 'bg-ok-soft text-ok ring-1 ring-inset ring-ok-line hover:brightness-[0.97] dark:hover:brightness-125',
-  bad: 'bg-bad-soft text-bad ring-1 ring-inset ring-bad-line hover:brightness-[0.97] dark:hover:brightness-125',
+  ok: 'border border-ok-line bg-surface text-ok hover:bg-ok-soft',
+  bad: 'border border-bad-line bg-surface text-bad hover:bg-bad-soft',
 }
 
 export function Button({
@@ -28,8 +28,8 @@ export function Button({
       type="button"
       {...p}
       className={cx(
-        'inline-flex shrink-0 items-center justify-center gap-2 rounded-[10px] font-medium whitespace-nowrap transition-[background-color,color,box-shadow,transform,opacity] duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0',
-        size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-10 px-4 text-[13.5px]',
+        'inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-colors duration-100 disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0',
+        size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-9 px-3.5 text-[13.5px]',
         btnVariants[variant],
         className,
       )}
@@ -50,7 +50,7 @@ export function IconButton({
       aria-label={label}
       {...p}
       className={cx(
-        'grid size-9 shrink-0 place-items-center rounded-[10px] text-fg-3 transition-colors duration-150 active:scale-95 [&_svg]:size-[17px]',
+        'grid size-8 shrink-0 place-items-center rounded-md text-fg-3 transition-colors duration-100 [&_svg]:size-4',
         tone === 'danger' ? 'hover:bg-bad-soft hover:text-bad' : 'hover:bg-surface-3 hover:text-fg',
         className,
       )}
@@ -60,7 +60,7 @@ export function IconButton({
 
 /* ---------- Campos ---------- */
 export const inputBase =
-  'h-10 w-full min-w-0 rounded-[10px] border border-line-strong bg-surface px-3 text-[14px] text-fg placeholder:text-fg-3 outline-none transition-[border-color,box-shadow,background-color] duration-150 hover:border-fg-3/60 focus:border-primary focus:ring-4 focus:ring-(--ring) disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-3 aria-invalid:border-bad aria-invalid:focus:ring-bad/15'
+  'h-9 w-full min-w-0 rounded-md border border-line-strong bg-surface px-2.5 text-[14px] text-fg placeholder:text-fg-3 outline-none transition-[border-color,box-shadow] duration-100 hover:border-fg-3/60 focus:border-primary focus:ring-1 focus:ring-primary disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-fg-3 aria-invalid:border-bad aria-invalid:focus:ring-bad'
 
 export function Field({
   label,
@@ -81,7 +81,7 @@ export function Field({
     <div className={cx('flex min-w-0 flex-col gap-1.5', className)} data-flash>
       <label htmlFor={htmlFor} className="flex items-center gap-1.5 text-[12.5px] font-medium text-fg-2">
         {label}
-        {optional && <span className="rounded-full bg-surface-3 px-1.5 py-px text-[10.5px] font-medium text-fg-3">opcional</span>}
+        {optional && <span className="font-normal text-fg-3">(opcional)</span>}
       </label>
       {children}
       {hint && <div className="min-h-[18px] text-[12px] leading-[18px]">{hint}</div>}
@@ -107,7 +107,7 @@ export function TextArea({ className, value, ...p }: ComponentProps<'textarea'>)
       rows={3}
       value={value}
       {...p}
-      className={cx(inputBase, 'h-auto min-h-[88px] resize-none py-2.5 leading-relaxed', className)}
+      className={cx(inputBase, 'h-auto min-h-[84px] resize-none py-2 leading-relaxed', className)}
     />
   )
 }
@@ -142,13 +142,12 @@ export function Select({
 
 /* ---------- Seletor segmentado com "pílula" deslizante ---------- */
 type Tone = 'default' | 'ok' | 'bad' | 'warn'
-const pillBg: Record<Tone, string> = {
-  default: 'bg-surface ring-1 ring-line dark:bg-surface-3 dark:ring-line-strong',
-  ok: 'bg-ok-soft ring-1 ring-ok-line',
-  bad: 'bg-bad-soft ring-1 ring-bad-line',
-  warn: 'bg-warn-soft ring-1 ring-warn-line',
+const pillOn: Record<Tone, string> = {
+  default: 'bg-fg text-surface',
+  ok: 'bg-ok text-surface',
+  bad: 'bg-bad text-surface',
+  warn: 'bg-warn text-surface',
 }
-const pillText: Record<Tone, string> = { default: 'text-fg', ok: 'text-ok', bad: 'text-bad', warn: 'text-warn' }
 
 export function Segmented<T extends string | boolean>({
   id,
@@ -167,7 +166,6 @@ export function Segmented<T extends string | boolean>({
   size?: 'sm' | 'md'
   ariaLabel?: string
 }) {
-  const lid = useId()
   const grupo = useRef<HTMLDivElement>(null)
   const textoDe = (l: ReactNode) => (typeof l === 'string' ? l : '')
   const semAcento = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
@@ -198,7 +196,7 @@ export function Segmented<T extends string | boolean>({
       aria-label={ariaLabel}
       title={temSimNao ? 'Atalho: tecle S ou N' : undefined}
       onKeyDown={onKeyDown}
-      className="relative inline-flex w-fit max-w-full rounded-[11px] border border-line bg-surface-2 p-[3px]"
+      className="inline-flex w-fit max-w-full divide-x divide-line-strong overflow-hidden rounded-md border border-line-strong bg-surface"
     >
       {options.map((o) => {
         const active = value === o.value
@@ -211,18 +209,11 @@ export function Segmented<T extends string | boolean>({
             aria-checked={active}
             onClick={() => onChange(active && allowClear ? null : o.value)}
             className={cx(
-              'relative isolate rounded-[8px] font-medium whitespace-nowrap transition-colors duration-200',
-              size === 'sm' ? 'h-7 px-2.5 text-[12.5px]' : 'h-8 px-3.5 text-[13px]',
-              active ? pillText[tone] : 'text-fg-2 hover:text-fg',
+              'font-medium whitespace-nowrap transition-colors duration-100',
+              size === 'sm' ? 'h-7 px-2.5 text-[12.5px]' : 'h-[34px] px-3.5 text-[13px]',
+              active ? pillOn[tone] : 'text-fg-2 hover:bg-surface-3 hover:text-fg',
             )}
           >
-            {active && (
-              <motion.span
-                layoutId={lid}
-                className={cx('absolute inset-0 -z-10 rounded-[8px] shadow-card', pillBg[tone])}
-                transition={{ type: 'spring', stiffness: 520, damping: 38 }}
-              />
-            )}
             {o.label}
           </button>
         )
@@ -265,7 +256,7 @@ export function Checkbox({
       )}
       data-flash
     >
-      <span className="relative grid size-[18px] shrink-0 place-items-center">
+      <span className="relative grid size-4 shrink-0 place-items-center">
         <input
           ref={ref}
           id={id}
@@ -275,11 +266,11 @@ export function Checkbox({
           aria-label={ariaLabel}
           onChange={(e) => onChange(e.target.checked, !!(e.nativeEvent as MouseEvent).shiftKey)}
           className={cx(
-            'peer size-[18px] cursor-pointer appearance-none rounded-[5px] border-[1.5px] transition-[background-color,border-color,box-shadow] duration-150 outline-none focus-visible:ring-4 focus-visible:ring-(--ring)',
+            'peer size-4 cursor-pointer appearance-none rounded-sm border transition-colors duration-100 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
             on ? 'border-primary bg-primary' : 'border-line-strong bg-surface group-hover:border-fg-3',
           )}
         />
-        <svg viewBox="0 0 24 24" className="pointer-events-none absolute size-[13px] text-on-primary" aria-hidden>
+        <svg viewBox="0 0 24 24" className="pointer-events-none absolute size-3 text-on-primary" aria-hidden>
           {indeterminate && !checked ? (
             <path d="M6 12h12" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" />
           ) : (
@@ -291,8 +282,8 @@ export function Checkbox({
               strokeLinecap="round"
               strokeLinejoin="round"
               initial={false}
-              animate={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              animate={{ opacity: checked ? 1 : 0 }}
+              transition={{ duration: 0.08 }}
             />
           )}
         </svg>
@@ -304,16 +295,16 @@ export function Checkbox({
 
 /* ---------- Avisos, etiquetas e atalhos ---------- */
 const calloutStyle = {
-  info: ['bg-primary-soft border-primary/20 text-fg', 'text-primary-ink', Info],
-  warn: ['bg-warn-soft border-warn-line text-fg', 'text-warn', TriangleAlert],
-  ok: ['bg-ok-soft border-ok-line text-fg', 'text-ok', CircleCheck],
-  bad: ['bg-bad-soft border-bad-line text-fg', 'text-bad', OctagonAlert],
+  info: ['border-l-primary text-fg', 'text-primary-ink', Info],
+  warn: ['border-l-warn text-fg', 'text-warn', TriangleAlert],
+  ok: ['border-l-ok text-fg', 'text-ok', CircleCheck],
+  bad: ['border-l-bad text-fg', 'text-bad', OctagonAlert],
 } as const
 
 export function Callout({ tone = 'info', children, className }: { tone?: keyof typeof calloutStyle; children: ReactNode; className?: string }) {
   const [box, icon, Icon] = calloutStyle[tone]
   return (
-    <div className={cx('flex items-start gap-2.5 rounded-xl border px-3.5 py-2.5 text-[13px] leading-relaxed', box, className)}>
+    <div className={cx('flex items-start gap-2.5 rounded-md border border-line border-l-2 bg-surface px-3.5 py-2.5 text-[13px] leading-relaxed', box, className)}>
       <Icon className={cx('mt-0.5 size-4 shrink-0', icon)} />
       <div className="min-w-0 flex-1">{children}</div>
     </div>
@@ -329,7 +320,7 @@ export function Reveal({ show, children, className }: { show: boolean; children:
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.24, ease: [0.2, 0.8, 0.2, 1] }}
+          transition={{ duration: 0.16, ease: 'easeOut' }}
           className="overflow-hidden"
         >
           <div className={className}>{children}</div>
@@ -340,15 +331,15 @@ export function Reveal({ show, children, className }: { show: boolean; children:
 }
 
 const tagTone = {
-  ok: 'bg-ok-soft text-ok',
-  bad: 'bg-bad-soft text-bad',
-  warn: 'bg-warn-soft text-warn',
-  muted: 'bg-surface-3 text-fg-2',
-  primary: 'bg-primary-soft text-primary-ink',
+  ok: 'border-ok-line text-ok',
+  bad: 'border-bad-line text-bad',
+  warn: 'border-warn-line text-warn',
+  muted: 'border-line-strong text-fg-2',
+  primary: 'border-primary/30 text-primary-ink',
 }
 export function Tag({ tone = 'muted', children, className }: { tone?: keyof typeof tagTone; children: ReactNode; className?: string }) {
   return (
-    <span className={cx('inline-flex h-[22px] shrink-0 items-center gap-1 rounded-full px-2 text-[11.5px] font-semibold whitespace-nowrap [&_svg]:size-3', tagTone[tone], className)}>
+    <span className={cx('inline-flex h-5 shrink-0 items-center gap-1 rounded-sm border px-1.5 text-[11.5px] font-medium whitespace-nowrap [&_svg]:size-3', tagTone[tone], className)}>
       {children}
     </span>
   )
@@ -356,7 +347,7 @@ export function Tag({ tone = 'muted', children, className }: { tone?: keyof type
 
 export function Kbd({ children }: { children: ReactNode }) {
   return (
-    <kbd className="inline-grid h-5 min-w-5 place-items-center rounded-[5px] border border-b-2 border-line-strong bg-surface px-1 font-mono text-[10.5px] font-medium text-fg-3">
+    <kbd className="inline-grid h-5 min-w-5 place-items-center rounded-sm border border-b-2 border-line-strong bg-surface px-1 font-mono text-[10.5px] font-medium text-fg-3">
       {children}
     </kbd>
   )
@@ -364,11 +355,11 @@ export function Kbd({ children }: { children: ReactNode }) {
 
 /** Animação padrão para itens de lista que entram e saem. */
 export const itemMotion = {
-  layout: true,
-  initial: { opacity: 0, y: -8, scale: 0.985 },
-  animate: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, scale: 0.97, transition: { duration: 0.16 } },
-  transition: { type: 'spring', stiffness: 420, damping: 34, mass: 0.8 },
+  layout: 'position',
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
+  transition: { duration: 0.14, ease: 'easeOut' },
 } as const
 
-export const itemCard = 'rounded-xl border border-line bg-surface-2 p-4 dark:bg-surface-2/70'
+export const itemCard = 'rounded-md border border-line bg-surface p-4'

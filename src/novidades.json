@@ -1,11 +1,10 @@
 {
-  "versao": "2026.11.17-2",
-  "data": "2026-11-17",
+  "versao": "2026.11.26-1",
+  "data": "2026-11-26",
   "itens": [
-    "Procuração pública agora pede livro, folha e data",
-    "Livro e folha aparecem no texto final e na revisão",
-    "Documento de apoio pode vir de uma proposta anterior, com o número dela",
-    "Base de garantias já vem com a data fixa de 23/10/2026",
-    "Documento utilizado agora tem data"
+    "Visual novo, mais simples e mais fácil de ler",
+    "A etapa de validade da outorga saiu",
+    "\"Busca\" agora se chama \"Busca Ai\" (as anotações antigas já foram atualizadas)",
+    "Novos tipos de documento: Ata de Eleição e Ata de Autorização"
   ]
 }

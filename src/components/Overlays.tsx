@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { CalendarDays, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { aplicarData, destinosData, useColarData } from '../lib/colar'
 import { fmtDate } from '../lib/dates'
 import { janela } from '../lib/janela'
@@ -33,7 +33,7 @@ function ColarDataDialog() {
     <AnimatePresence>
       {iso && n && (
         <motion.div
-          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -42,17 +42,14 @@ function ColarDataDialog() {
           <motion.div
             role="dialog"
             aria-modal="true"
-            initial={{ opacity: 0, scale: 0.94, y: 8 }}
+            initial={{ opacity: 0, scale: 0.98, y: 4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm rounded-2xl border border-line bg-surface p-5 shadow-pop"
           >
             <div className="mb-3 flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary-ink">
-                <CalendarDays className="size-5" />
-              </span>
               <div>
                 <h2 className="text-[15.5px] font-semibold">Onde colocar {fmtDate(iso)}?</h2>
                 <p className="text-[12.5px] text-fg-3">Escolha o campo</p>
@@ -65,7 +62,7 @@ function ColarDataDialog() {
                   type="button"
                   autoFocus={i === 0}
                   onClick={() => aplicarData(d, iso)}
-                  className="flex items-center justify-between gap-3 rounded-[10px] px-3 py-2.5 text-left text-[13.5px] text-fg transition-colors hover:bg-surface-2 focus-visible:bg-primary-soft"
+                  className="flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-left text-[13.5px] text-fg transition-colors hover:bg-surface-2 focus-visible:bg-primary-soft"
                 >
                   {d.rotulo}
                   <ChevronRight className="size-4 text-fg-3" />

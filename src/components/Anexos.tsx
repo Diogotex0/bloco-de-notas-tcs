@@ -61,7 +61,7 @@ export function AnexosDialog() {
     <AnimatePresence>
       {acao && n && lista.length > 0 && (
         <motion.div
-          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[70] grid place-items-center bg-black/40 p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -72,10 +72,10 @@ export function AnexosDialog() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="anexos-titulo"
-            initial={{ opacity: 0, scale: 0.94, y: 8 }}
+            initial={{ opacity: 0, scale: 0.98, y: 4 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && tudo) {
@@ -86,9 +86,6 @@ export function AnexosDialog() {
             className="w-full max-w-md rounded-2xl border border-line bg-surface p-5 shadow-pop"
           >
             <div className="mb-4 flex items-center gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-warn-soft text-warn">
-                <Paperclip className="size-5" />
-              </span>
               <div>
                 <h2 id="anexos-titulo" className="text-[16px] font-semibold">
                   Você anexou tudo na proposta?
@@ -166,12 +163,12 @@ export function FaixaAnexos({ compacta }: { compacta?: boolean }) {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.16 }}
           className="overflow-hidden"
         >
           <div
             className={cx(
-              'flex items-center gap-3 rounded-xl border border-warn-line bg-warn-soft',
+              'flex items-center gap-3 rounded-md border border-line border-l-2 border-l-warn bg-surface',
               compacta ? 'px-3 py-2' : 'px-4 py-2.5',
             )}
           >

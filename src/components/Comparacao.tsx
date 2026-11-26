@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowLeftRight, ChevronDown, GitCompareArrows, Minus, Plus } from 'lucide-react'
+import { ArrowLeftRight, ChevronDown, Minus, Plus } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { analiseAnterior, comparar, type Mudanca } from '../lib/comparar'
 import { fmtDate } from '../lib/dates'
@@ -26,9 +26,6 @@ export function Comparacao({ n }: { n: Note }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
       <button type="button" onClick={() => setAberto((v) => !v)} aria-expanded={aberto} className="flex w-full items-center gap-3 px-4 py-3 text-left sm:px-5">
-        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary-ink">
-          <GitCompareArrows className="size-4" />
-        </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[14px] font-semibold">
             {mudancas.length ? `${mudancas.length} ${mudancas.length === 1 ? 'mudança' : 'mudanças'} desde a análise anterior` : 'Nada mudou desde a análise anterior'}
@@ -65,7 +62,7 @@ export function Comparacao({ n }: { n: Note }) {
                     <button
                       type="button"
                       onClick={() => irPara({ sec: m.sec, target: `sec-${m.sec}` })}
-                      className="flex w-full items-start gap-2.5 rounded-[9px] px-2 py-1.5 text-left text-[13px] leading-snug text-fg transition-colors hover:bg-surface-2"
+                      className="flex w-full items-start gap-2.5 rounded-md px-2 py-1.5 text-left text-[13px] leading-snug text-fg transition-colors hover:bg-surface-2"
                     >
                       <span className={cx('mt-px grid size-5 shrink-0 place-items-center rounded-md', cor)}>
                         <Icon className="size-3" />

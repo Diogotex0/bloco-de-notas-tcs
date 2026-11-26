@@ -1,5 +1,4 @@
 import { motion } from 'motion/react'
-import { History } from 'lucide-react'
 import type { Note } from '../lib/types'
 import { cnpjClean } from '../lib/cnpj'
 import { fmtDate } from '../lib/dates'
@@ -42,9 +41,6 @@ export function Reaproveitar({ n }: { n: Note }) {
           animate={{ scale: 1 }}
           className="flex flex-col gap-3 rounded-xl border border-primary/25 bg-primary-soft p-3.5 sm:flex-row sm:items-center"
         >
-          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/12 text-primary-ink">
-            <History className="size-[18px]" />
-          </span>
           <div className="min-w-0 flex-1 text-[13px] leading-relaxed">
             <p className="font-semibold text-fg">Este CNPJ já tem uma análise anterior</p>
             <p className="text-fg-2">
