@@ -10,3 +10,5 @@ Thumbs.db
 *.xlsm
 *.xls
 *.csv
+
+*.tsbuildinfo
