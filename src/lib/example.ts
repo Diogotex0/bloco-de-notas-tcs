@@ -39,5 +39,6 @@ export function notaExemplo(): Note {
     '',
     'Procuração validada no ITI. Print anexado na proposta.',
   ].join('\n')
+  n.temAlinhamento = false
   return n
 }

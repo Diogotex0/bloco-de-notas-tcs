@@ -29,7 +29,8 @@ export function resumoEtapa(n: Note, k: SectionKey): string {
     }
     case 'anotacoes': {
       const t = n.anotacoes.trim().replace(/\s+/g, ' ')
-      return t.length > 70 ? t.slice(0, 70) + '…' : t
+      const al = n.temAlinhamento === null ? '' : n.temAlinhamento ? 'Com alinhamento' : 'Sem alinhamento'
+      return [t.length > 70 ? t.slice(0, 70) + '…' : t, al].filter(Boolean).join(' · ')
     }
   }
 }

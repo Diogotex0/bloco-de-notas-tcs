@@ -14,6 +14,7 @@ export type BlocoChave =
   | 'razaoAlterada'
   | 'filiais'
   | 'anotacoes'
+  | 'alinhamento'
 
 export interface Bloco {
   chave: BlocoChave
@@ -73,6 +74,7 @@ export const CATALOGO: Record<BlocoChave, { nome: string; dica?: string; rotulos
     ],
   },
   anotacoes: { nome: 'Anotações', rotulos: [{ id: 'titulo', nome: 'Título', padrao: 'Anotações' }] },
+  alinhamento: { nome: 'Alinhamento', dica: 'Só aparece quando tem alinhamento', rotulos: [{ id: 'titulo', nome: 'Título', padrao: 'Alinhamento' }] },
 }
 
 const ORDEM_PADRAO: [BlocoChave, boolean][] = [
@@ -86,6 +88,7 @@ const ORDEM_PADRAO: [BlocoChave, boolean][] = [
   ['razaoAlterada', false],
   ['filiais', false],
   ['anotacoes', true],
+  ['alinhamento', true],
 ]
 
 const rotulosPadrao = (k: BlocoChave) => Object.fromEntries(CATALOGO[k].rotulos.map((r) => [r.id, r.padrao]))

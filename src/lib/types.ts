@@ -77,6 +77,10 @@ export interface Note {
   temFiliais: Tri
   filiais: Filial[]
   anotacoes: string
+  /** Se houve alinhamento (com gerente, jurídico…). null = ainda não respondido. */
+  temAlinhamento: Tri
+  /** Texto do alinhamento, quando houve. Entra no texto final. */
+  alinhamento: string
 }
 
 export type SectionKey =

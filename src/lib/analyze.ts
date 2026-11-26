@@ -115,13 +115,16 @@ export function analisar(n: Note): Issue[] {
       add('warn', 'filiais', `${inv.length} ${plural(inv.length, 'CNPJ de filial inválido', 'CNPJs de filial inválidos')}`, `fil-${inv[0].id}`)
   }
 
+  // 6. Anotações
+  if (n.temAlinhamento === null) add('warn', 'anotacoes', 'Informe se tem alinhamento', 'f-temAlinhamento')
+  else if (n.temAlinhamento && !n.alinhamento.trim()) add('warn', 'anotacoes', 'Escreva o texto do alinhamento', 'f-alinhamento')
 
   const order: Record<Level, number> = { block: 0, warn: 1, info: 2 }
   return out.sort((a, b) => order[a.level] - order[b.level])
 }
 
 export function temConteudo(n: Note, key: SectionKey) {
-  if (key === 'anotacoes') return !!n.anotacoes.trim()
+  if (key === 'anotacoes') return !!n.anotacoes.trim() || n.temAlinhamento !== null
   return true
 }
 

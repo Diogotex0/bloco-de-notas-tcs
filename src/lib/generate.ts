@@ -111,6 +111,8 @@ export function linhasBloco(n: Note, chave: BlocoChave, m: Modelo = atual()): st
     }
     case 'anotacoes':
       return n.anotacoes.trim() ? [`${r('titulo')}:`, n.anotacoes.trim()] : []
+    case 'alinhamento':
+      return n.temAlinhamento && n.alinhamento.trim() ? [`${r('titulo')}:`, n.alinhamento.trim()] : []
   }
 }
 

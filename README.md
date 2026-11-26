@@ -45,7 +45,7 @@ O Bloco de Poderes resolve isso **sem mexer em nenhum sistema interno**: é só 
 | 3 | **Documentos** | Recebidos na proposta e de apoio (data e origem: Busca Ai, Junta Comercial, Sharefiche 1/2, proposta anterior ou outro). Tipos incluem Ata de Eleição e Ata de Autorização. Documento utilizado pode ser marcado como "Retirado da JUCESP" (vai no texto e entra na lista de anexos). Junta Comercial já marca "anexado na proposta" |
 | 4 | **Garantidor** | Sim/Não + data da base (já vem com a data padrão da base de garantias). Com a planilha de referência carregada, mostra o quórum de garantias do tipo societário |
 | 5 | **Filiais** | Colar vários CNPJs de uma vez (mesmo com agência, conta e outros dados junto: só os CNPJs entram), marcar "coube / não coube réplica" em lote, lista organizada automaticamente |
-| 6 | **Anotações** | Campo livre: formas de assinatura, quóruns e observações. Com a planilha carregada, digitar um código de autorização (ex.: `A02` e espaço) escreve o texto por extenso |
+| 6 | **Anotações** | Campo livre: formas de assinatura, quóruns e observações. Com a planilha carregada, digitar um código de autorização (ex.: `A02` e espaço) escreve o texto por extenso. No fim, **Tem alinhamento?** (Sim/Não): no Sim, o texto do alinhamento entra no texto final |
 
 Só uma etapa fica aberta por vez; as fechadas mostram um resumo do que já foi preenchido.
 

@@ -1,7 +1,7 @@
 {
-  "versao": "2026.11.26-5",
+  "versao": "2026.11.26-6",
   "data": "2026-11-26",
   "itens": [
-    "Link da Junta Comercial fixo no topo da etapa Documentos: escolha o estado e abra a consulta (usa a UF da Proposta, se preenchida)"
+    "Anotações: nova pergunta \"Tem alinhamento?\" no fim da etapa. No Sim, escreva o alinhamento e ele entra no fim do texto final; no Não, é só seguir"
   ]
 }

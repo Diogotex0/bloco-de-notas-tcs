@@ -4,7 +4,7 @@ import { useNotes } from '../../store/notes'
 import { DATA_BASE_GARANTIAS, tipoSocietario } from '../../lib/defaults'
 import { abrirGerenciarPlanilha, linkPorNome, quorumDoTipo, useReferencia } from '../../store/referencia'
 import { normalizar } from '../../lib/planilha'
-import { Field, Segmented } from '../ui'
+import { Field, Reveal, Segmented, TextArea } from '../ui'
 import { DateInput } from '../DateInput'
 import { CampoAnotacoes } from '../Codigos'
 import { LinkExterno } from '../LinkExterno'
@@ -115,5 +115,35 @@ export function Garantidor({ n }: { n: Note }) {
 
 /* ---------- Anotações ---------- */
 export function Anotacoes({ n }: { n: Note }) {
-  return <CampoAnotacoes n={n} />
+  const editar = useNotes((s) => s.editar)
+  return (
+    <div className="grid gap-4">
+      <CampoAnotacoes n={n} />
+      <div className="grid gap-3 border-t border-line pt-4">
+        <Field label="Tem alinhamento?">
+          <Segmented
+            id="f-temAlinhamento"
+            ariaLabel="Tem alinhamento?"
+            value={n.temAlinhamento}
+            allowClear
+            onChange={(v) => editar((d) => void (d.temAlinhamento = v))}
+            options={[
+              { value: true, label: 'Sim' },
+              { value: false, label: 'Não' },
+            ]}
+          />
+        </Field>
+        <Reveal show={n.temAlinhamento === true}>
+          <Field label="Texto do alinhamento" htmlFor="f-alinhamento">
+            <TextArea
+              id="f-alinhamento"
+              value={n.alinhamento}
+              placeholder="O que foi alinhado, com quem e quando. Entra no texto final."
+              onChange={(e) => editar((d) => void (d.alinhamento = e.target.value))}
+            />
+          </Field>
+        </Reveal>
+      </div>
+    </div>
+  )
 }

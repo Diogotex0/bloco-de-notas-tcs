@@ -76,7 +76,7 @@ export const SECTIONS: { key: SectionKey; title: string; desc: string; optional?
   { key: 'docs', title: 'Documentos', desc: 'Recebidos na proposta e de apoio' },
   { key: 'garantidor', title: 'Garantidor', desc: 'Consulta à base de garantias' },
   { key: 'filiais', title: 'Filiais', desc: 'CNPJs e réplica' },
-  { key: 'anotacoes', title: 'Anotações', desc: 'Formas de assinatura, quóruns e observações', optional: true },
+  { key: 'anotacoes', title: 'Anotações', desc: 'Observações, quóruns e alinhamento' },
 ]
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9)
@@ -117,6 +117,8 @@ export function novaNota(): Note {
     temFiliais: null,
     filiais: [],
     anotacoes: '',
+    temAlinhamento: null,
+    alinhamento: '',
   }
 }
 
@@ -125,7 +127,8 @@ export function notaVazia(n: Note) {
     !n.cnpj && !n.proposta && !n.razaoSocial && !n.razaoAlterada && !n.receita && !n.tipoSocietario && !n.uf &&
     !n.grupos.length && !n.docsRecebidos.length && !n.docsApoio.length &&
     n.garantidor === null &&
-    n.temFiliais === null && !n.filiais.length && !n.anotacoes.trim()
+    n.temFiliais === null && !n.filiais.length && !n.anotacoes.trim() &&
+    n.temAlinhamento === null && !n.alinhamento.trim()
   )
 }
 
@@ -171,6 +174,8 @@ export function normalizarNota(raw: unknown): Note | null {
   }
   if (!TIPOS_SOCIETARIOS.some((t) => t.nome === n.tipoSocietario)) n.tipoSocietario = ''
   if (!UFS.includes(n.uf)) n.uf = ''
+  // Anotações finalizadas antes da pergunta do alinhamento não ficam pendentes por causa dela.
+  if (raw.temAlinhamento === undefined && n.situacao === 'finalizada') n.temAlinhamento = false
   n.grupos = list(n.grupos, () => novoGrupo())
   const idsGrupos = new Set(n.grupos.map((g) => g.id))
   for (const g of n.grupos) if (g.substabeleceuDe === g.id || !idsGrupos.has(g.substabeleceuDe)) g.substabeleceuDe = ''

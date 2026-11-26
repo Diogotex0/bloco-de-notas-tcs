@@ -61,7 +61,11 @@ export function linhasRevisao(n: Note): { key: SectionKey; titulo: string; linha
         ...(nd.length ? [{ rotulo: 'A definir', valor: lista(nd) }] : []),
       ]
     })(),
-    anotacoes: [{ rotulo: 'Anotações', valor: n.anotacoes.trim(), opcional: true }],
+    anotacoes: [
+      { rotulo: 'Anotações', valor: n.anotacoes.trim(), opcional: true },
+      { rotulo: 'Tem alinhamento?', valor: n.temAlinhamento === null ? '' : n.temAlinhamento ? 'Sim' : 'Não' },
+      ...(n.temAlinhamento ? [{ rotulo: 'Alinhamento', valor: n.alinhamento.trim() }] : []),
+    ],
   }
   return SECTIONS.map((s) => ({ key: s.key, titulo: s.title, linhas: L[s.key] }))
 }
