@@ -41,6 +41,7 @@ function LinkJunta({ ufFixa }: { ufFixa?: string }) {
       </p>
     )
   const junta = linksJunta(ref, uf)
+  if (ufFixa && !junta) return null
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px]">
       {!ufFixa && (
@@ -367,7 +368,6 @@ function Apoio({ d, i }: { d: DocApoio; i: number }) {
               />
             </Field>
           )}
-          {d.origem === 'Junta Comercial' && <LinkJunta />}
           <Reveal show={d.origem === 'Junta Comercial' && !d.anexado}>
             <Callout tone="warn">Documento da Junta Comercial: anexe na proposta e marque a opção acima.</Callout>
           </Reveal>
@@ -394,6 +394,10 @@ export function Documentos({ n }: { n: Note }) {
 
   return (
     <div className="grid gap-6">
+      <div className="rounded-md border border-line bg-surface-2 px-3 py-2">
+        <LinkJunta />
+      </div>
+
       <div>
         <SubHead title="Documento utilizado" desc="O que veio na proposta. Informe a data do documento." />
         <div className="relative grid gap-2.5">

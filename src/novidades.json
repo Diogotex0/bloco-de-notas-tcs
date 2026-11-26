@@ -1,8 +1,7 @@
 {
-  "versao": "2026.11.26-4",
+  "versao": "2026.11.26-5",
   "data": "2026-11-26",
   "itens": [
-    "Respostas sugeridas: a aba Finalização e a janela de respostas (Alt + R) mostram as respostas da planilha que combinam com a anotação (mandato vencido, falta ata de eleição, duplicidade, procuração não validada, fundo)",
-    "Procuração particular: escolha como foi assinada (D4Sign, Clicksign, DocuSign…) e marque \"Não foi possível validar\" para abrir a pendência certa daquela plataforma"
+    "Link da Junta Comercial fixo no topo da etapa Documentos: escolha o estado e abra a consulta (usa a UF da Proposta, se preenchida)"
   ]
 }
